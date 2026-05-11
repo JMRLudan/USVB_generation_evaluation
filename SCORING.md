@@ -13,8 +13,11 @@ Scenarios are tested under five evidence variants:
 
 ## Judge Extraction Fields
 
-A lightweight classifier (Haiku 4.5) reads the model's response and extracts five fields
-in the canonical `with_analysis` mode used across the full model roster:
+A classifier reads the model's response and extracts five fields in the
+canonical `with_analysis` mode used across the full model roster.
+canon_no_distractor and canon_unified are judged by `gemini-3-flash-preview`;
+the canon_direct ceiling preset is judged by `claude-haiku-4-5-20251001`
+(see `INFERENCE.md` for full settings).
 
 | Field | Values | Meaning |
 |---|---|---|

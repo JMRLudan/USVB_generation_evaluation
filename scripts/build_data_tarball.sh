@@ -2,7 +2,7 @@
 # build_data_tarball.sh — package the canonical results + prompts into a
 # single tarball for GitHub Releases.
 #
-# Output: lcvb-data-v1.tar.gz at repo root (~300MB).
+# Output: lcvb-data-v2.tar.gz at repo root (~244MB).
 #
 # Contents:
 #   data/runs/canon_*/<model>/<run_id>/results.tsv   (all canonical TSVs)
@@ -24,7 +24,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-VERSION="v1"
+VERSION="v2"
 DRY=""
 while [[ $# -gt 0 ]]; do
     case "$1" in

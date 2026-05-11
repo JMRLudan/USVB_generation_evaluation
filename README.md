@@ -47,13 +47,13 @@ distribution](#data-distribution) below.
 git clone https://github.com/JMRLudan/LCVB_generation_evaluation.git
 cd LCVB_generation_evaluation
 
-# Download the canonical data + prompts (~313MB, split into 4 parts).
+# Download the canonical data + prompts (~244MB, split into 3 parts).
 # Reassemble the tarball, then extract.
-BASE=https://github.com/JMRLudan/LCVB_generation_evaluation/releases/download/v1
-for i in 0 1 2 3; do curl -OL "$BASE/lcvb-data-v1.tar.gz.part$i"; done
-cat lcvb-data-v1.tar.gz.part0 lcvb-data-v1.tar.gz.part1 \
-    lcvb-data-v1.tar.gz.part2 lcvb-data-v1.tar.gz.part3 > lcvb-data-v1.tar.gz
-tar -xzvf lcvb-data-v1.tar.gz
+BASE=https://github.com/JMRLudan/LCVB_generation_evaluation/releases/download/v2
+for i in 00 01 02; do curl -OL "$BASE/lcvb-data-v2.tar.gz.part$i"; done
+cat lcvb-data-v2.tar.gz.part00 lcvb-data-v2.tar.gz.part01 \
+    lcvb-data-v2.tar.gz.part02 > lcvb-data-v2.tar.gz
+tar -xzvf lcvb-data-v2.tar.gz
 
 # Spin up the viewer
 pip install -r requirements.txt
@@ -121,35 +121,43 @@ The values below are a snapshot of the canonical runs across the full
 roster (scenario-macro-averaged). The viewer's Frontier tab is the
 authoritative source and updates as runs are re-judged or extended.
 
-| Vendor / family | Model | SR direct | SR no-dist | SR unified | Gap |
+| Vendor / family | Model | SR direct | SR no-dist | SR unified | Gap (no_dist − unified) |
 |---|---|---|---|---|---|
-| Anthropic | claude-haiku-4-5 | (archived) | 54.2 | 28.4 | n/a |
-| Anthropic | claude-sonnet-4.6 | 97.9 | 64.0 | 67.6 | +30 |
-| Anthropic | claude-opus-4.7 | 97.6 | 70.3 | 81.8 | +16 |
-| OpenAI | gpt-5 | 98.4 | 73.3 | 91.8 | +7 |
-| OpenAI | gpt-5.5 | 99.1 | 74.1 | 90.5 | +9 |
-| Google | gemini-3-flash | 98.2 | 74.3 | 92.6 | +6 |
-| Google | gemini-3.1-pro | 98.4 | 72.7 | 91.4 | +7 |
-| Open-source | qwen3.5-397b-a17b (off) | 98.6 | 84.3 | 61.1 | +37 |
-| Open-source | gpt-oss-120b | 96.7 | 75.1 | 40.5 | +56 |
-| Open-source | gpt-oss-20b | 96.1 | 56.5 | 19.9 | +76 |
-| Open-source | deepseek-v4-pro | 97.4 | 88.4 | 63.1 | +34 |
+| Anthropic | claude-haiku-4-5 | 97.8 | 54.3 | 22.0 | +32 |
+| Anthropic | claude-sonnet-4.6 | 97.4 | 75.6 | 57.0 | +19 |
+| Anthropic | claude-opus-4.7 | 97.3 | 84.1 | 74.0 | +10 |
+| OpenAI | gpt-5 | 98.0 | 83.7 | 80.6 | +3 |
+| OpenAI | gpt-5.5 | 98.8 | 88.1 | 81.2 | +7 |
+| OpenAI | gpt-5-mini | 98.7 | 81.8 | 61.7 | +20 |
+| Google | gemini-3-flash | 98.1 | 92.3 | 86.6 | +6 |
+| Google | gemini-3.1-pro | 98.0 | 89.6 | 88.1 | +2 |
+| Google | gemini-3.1-flash-lite | 98.3 | 84.6 | 58.4 | +26 |
+| Open-source | deepseek-v4-pro | 97.1 | 83.9 | 57.6 | +26 |
+| Open-source | gpt-oss-120b | 96.6 | 61.8 | 27.2 | +35 |
+| Open-source | gpt-oss-20b | 95.8 | 40.0 | 9.3 | +31 |
+| Open-source | qwen3.5-397b-a17b (off) | 98.3 | 77.5 | 52.8 | +25 |
+| Open-source | qwen3.5-122b-a10b (off) | 98.3 | 73.1 | 49.4 | +24 |
+| Open-source | qwen3.5-35b-a3b (off) | 98.2 | 68.4 | 41.4 | +27 |
+| Open-source | qwen3.5-27b (off) | 98.5 | 77.0 | 54.8 | +22 |
+| Open-source | qwen3.5-9b (on)  | 97.9 | 72.8 | 54.3 | +18 |
+| Open-source | qwen3.5-9b (off) | 97.2 | 50.3 | 30.0 | +20 |
 
 Across this roster, canon_direct SR clusters in the 96–99% band while
-canon_unified SR ranges from roughly 19% to 93%. The per-model gap
-between the two is the quantity reported as the vigilance gap.
+canon_unified SR ranges from roughly 9% to 88%. The per-model gap
+between no-distractor and unified is the quantity reported as the
+vigilance gap.
 
 ---
 
 ## Data distribution
 
 The canonical results, prompts, and integrity manifest are published as
-a tarball (`lcvb-data-v1.tar.gz`, ~313 MB, split across four release
+a tarball (`lcvb-data-v2.tar.gz`, ~244 MB, split across three release
 assets) attached to GitHub Releases. It extracts in-place over the
 cloned repo:
 
 ```
-lcvb-data-v1/
+lcvb-data-v2/
 ├── data/runs/canon_direct/<model>/<run_id>/results.tsv
 ├── data/runs/canon_no_distractor/<model>/<run_id>/results.tsv
 ├── data/runs/canon_unified/<model>/<run_id>/results.tsv
@@ -160,8 +168,8 @@ lcvb-data-v1/
 └── README.md                              # extraction quickstart
 ```
 
-To rebuild it from a local clone: `bash scripts/build_data_tarball.sh`.
-The output lands at `lcvb-data-v1.tar.gz` in the repo root.
+To rebuild it from a local clone: `bash scripts/build_data_tarball.sh --version v2`.
+The output lands at `lcvb-data-v2.tar.gz` in the repo root.
 
 ---
 

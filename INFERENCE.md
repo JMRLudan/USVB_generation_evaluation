@@ -5,7 +5,7 @@ model's responses on the LCVB canon, plus the complete judge contract.
 
 To reproduce any model's results: (1) take the prompts in
 `generated/canon_<preset>/<key>.json`, (2) call the model below with
-the listed settings, (3) judge with the Haiku settings at the bottom.
+the listed settings, (3) judge with the gemini-3-flash settings at the bottom.
 Implementation choices that should not affect the output distribution
 — batch vs real-time submission, retry policy, runner code — are not
 documented here; the model and the API parameters in the table below
@@ -85,12 +85,20 @@ left at system default — the controlled reasoning-on/off comparison.
 
 | Setting | Value |
 |---|---|
-| Judge model | `claude-haiku-4-5-20251001` |
-| API | Anthropic Messages |
+| Judge model (canon_no_distractor, canon_unified) | `gemini-3-flash-preview` |
+| Judge model (canon_direct, the inline-constraint ceiling) | `claude-haiku-4-5-20251001` |
+| API (gemini judge) | Google Gemini Batch |
+| API (haiku judge) | Anthropic Messages |
 | temperature | 0.0 |
-| max_tokens | 320 |
+| max_tokens (gemini) | 2048 (allows for thinking tokens, which Gemini bills at the output rate) |
+| max_tokens (haiku) | 320 |
 | Mode | `with_analysis` (5-field schema; populates `mentions_user_evidence`) |
 | Evidence seeds | The constraint-grounding fact is passed in for C-bearing variants (C, A+C, B+C); empty list for A and B variants. |
+
+The canon_direct preset (where the constraint is presented inline in the user
+message rather than buried in conversation history) is the ceiling test — every
+roster model lands above 95% SR on it regardless of judge — so the judge choice
+on canon_direct doesn't materially affect the headline vigilance-gap claim.
 
 ### Judge system prompt (verbatim)
 
@@ -182,7 +190,7 @@ following is sufficient:
 
 1. Read `generated/canon_<preset>/<scenario>_<variant>_<perm>_<draw>_<length>.json` — gives `system_prompt`, `user_message`, and metadata.
 2. Make a chat-completions request to the model with `messages = [{role: "system", content: system_prompt}, {role: "user", content: user_message}]` and the parameters from the table above.
-3. Read the response's visible content; pass it to the Haiku judge with the system prompt above and the user message template filled in.
+3. Read the response's visible content; pass it to the gemini-3-flash judge with the system prompt above and the user message template filled in.
 4. Parse the judge's 5-field response; row-level booleans (vigilance, etc.) follow from `SCORING.md`.
 
 Result rows are written to `data/runs/<preset>/<model_dir>/<run_id>/results.tsv`.

@@ -210,8 +210,8 @@ haystack size.
 - **The scoring semantics.** Rules for SR, General Flag, False Alarm,
   Choice Correct live in `SCORING.md` and `pipeline/eval_pipeline.py`'s
   judge prompt; they are orthogonal to prompt construction.
-- **The judge.** Held fixed at Haiku 4.5 per project convention. A
-  different judge is a different benchmark.
+- **The judge.** Held fixed at gemini-3-flash-preview per project convention.
+  A different judge is a different benchmark.
 
 ---
 
