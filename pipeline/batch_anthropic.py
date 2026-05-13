@@ -2,7 +2,7 @@
 batch_anthropic.py — Anthropic Messages Batches adapter.
 =========================================================
 
-Wraps `anthropic.messages.batches` for LCVB canon runs. 50% discount
+Wraps `anthropic.messages.batches` for USVB canon runs. 50% discount
 on the real-time price; 24-hour completion SLA in practice (often
 much less).
 

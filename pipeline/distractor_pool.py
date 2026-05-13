@@ -22,7 +22,7 @@ every renderer in this repo MUST satisfy:
 
   - **No two scenarios share the same distractor within a single draw.**
     The pool currently holds 94 deduplicated distractor groups (after
-    the 2026-05-01 LCVB-substring strip — distractors that contained
+    the 2026-05-01 USVB-substring strip — distractors that contained
     any verbatim seed text from a scenario were removed to prevent
     contamination). With 85 scenarios, each draw is a 1-to-1
     assignment using an 85-subset of the pool. Pool size is read

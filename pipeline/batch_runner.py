@@ -84,27 +84,24 @@ def build_requests(
 # Results sink — write to the same TSV shape the existing pipeline uses
 # ──────────────────────────────────────────────────────────────────────
 # Mirrors data/runs/<preset>/<model>/<run_id>/results.tsv as written by
-# multi_model_runner. Order matches the on-disk header so the viewer
-# and rejudge_failed.py pick batch outputs up natively.
+# multi_model_runner. Order matches the on-disk header.
 RESULTS_HEADER = [
     "run_id", "condition",
     "scenario_id", "evidence_variant", "permutation",
     "expected_answer",
     "raw_response",
-    "recommendation", "flagged", "constraint_mentioned", "heavily_modified",
-    "mentions_user_evidence",
+    "recommendation", "constraint_mentioned", "sufficiently_modified",
     "explanation",
     "parse_error",
-    "vigilance", "general_flag", "false_alarm", "choice_correct", "abstained",
+    "vigilance_refuse_only", "abstain_type",
+    "choice_correct", "abstained",
     "input_tokens", "output_tokens",
     "judge_input_tokens", "judge_output_tokens",
     "latency_ms",
 ]
 
-# Sentinels recognized by rejudge_failed.is_failed_judge — setting
-# parse_error=1 + explanation="(judge error)" makes every batch row
-# eligible for the standard rejudge sweep, so we never need a
-# batch-specific scoring path.
+# Batch-judge rows start with parse_error=1 + explanation="(judge error)"
+# so a downstream judge pass picks them up.
 _JUDGE_PENDING_EXPLANATION = "(judge error — pending batch judge pass)"
 
 
@@ -148,8 +145,8 @@ def write_results_tsv(
 ) -> None:
     """Write a results.tsv with the same 24-col schema multi_model_runner
     produces. Subject-side fields populated from the BatchResult; judge
-    fields left blank with `parse_error=1` so a downstream
-    `rejudge_failed.py --include-all` pass fills them in.
+    fields left blank with `parse_error=1` so a downstream judge pass
+    fills them in.
 
     `prompts_dir` is optional — when provided, we pull
     `expected_answer`, `condition`, and a few other fields straight from
@@ -212,15 +209,12 @@ def write_results_tsv(
                 "expected_answer": expected,
                 "raw_response": (f"ERROR: {r.error}" if r.status != "ok" else content_escaped),
                 "recommendation": "",
-                "flagged": "",
                 "constraint_mentioned": "",
-                "heavily_modified": "",
-                "mentions_user_evidence": "",
+                "sufficiently_modified": "",
                 "explanation": _JUDGE_PENDING_EXPLANATION if r.status == "ok" else "(subject error)",
                 "parse_error": "1",
-                "vigilance": "",
-                "general_flag": "",
-                "false_alarm": "",
+                "vigilance_refuse_only": "",
+                "abstain_type": "",
                 "choice_correct": "",
                 "abstained": "",
                 "input_tokens": r.input_tokens or 0,
@@ -276,7 +270,7 @@ def cmd_submit(args: argparse.Namespace) -> int:
     adapter = get_adapter(provider)
 
     # Chunk if necessary (canon_unified needs 2 chunks under Anthropic's
-    # 256MB cap; fits in 1 for canon_direct/no_distractor). The optional
+    # 256MB cap; fits in 1 for canon_no_distractor). The optional
     # --max-mb-per-chunk override lets sandbox callers force smaller
     # chunks so each upload fits within a per-call timeout budget.
     from .batch_common import chunk_requests
@@ -416,7 +410,7 @@ def cmd_fetch(args: argparse.Namespace) -> int:
     prompts_dir = Path(prompts_dir_str) if prompts_dir_str else None
     # Preset defaults to the prompts_dir leaf name so the fetched
     # results land under data/runs/<preset>/...  (matches the layout
-    # canon_direct/canon_no_distractor/canon_unified expects).
+    # canon_no_distractor/canon_unified expects).
     preset = args.preset or (prompts_dir.name if prompts_dir else "unknown")
     out_dir = Path(args.out_dir) if args.out_dir else Path(
         f"./data/runs/{preset}/{model.replace('/', '_')}/{run_id}"
@@ -465,14 +459,6 @@ def cmd_fetch(args: argparse.Namespace) -> int:
         print(f"  WARN: cost logging failed ({type(e).__name__}: {e}). "
               f"Results written, but costs.csv not updated.")
 
-    if n_ok > 0:
-        print()
-        print("Next step — run the judge over these raw responses:")
-        print(f"  python3 pipeline/rejudge_failed.py "
-              f"--run-id {run_id} --model {model} --include-all")
-        print("  (--include-all is needed: every batch row is initialized "
-              "with parse_error=1, which marks them all as judge-pending.)")
-
     return 0
 
 
@@ -514,7 +500,7 @@ def main() -> int:
         pass
 
     p = argparse.ArgumentParser(
-        description="LCVB batch runner — submit/poll/fetch provider batch jobs."
+        description="USVB batch runner — submit/poll/fetch provider batch jobs."
     )
     sub = p.add_subparsers(dest="cmd", required=True)
 

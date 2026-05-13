@@ -43,7 +43,6 @@ REPO = Path(__file__).resolve().parent.parent
 
 # Expected counts per preset, locked at unified-canon design (2026-05-01).
 EXPECTED_PROMPT_COUNTS = {
-    "canon_direct": 2122,
     "canon_no_distractor": 2122,
     "canon_unified": 6366,
 }
@@ -301,7 +300,7 @@ def main() -> int:
         print("ERROR: cannot locate pipeline/renderers/mixer.py — running from wrong dir?")
         return 2
 
-    print(f"LCVB preflight — repo: {REPO}\n")
+    print(f"USVB preflight — repo: {REPO}\n")
 
     c = CheckRunner()
     print("[1] Pool integrity")

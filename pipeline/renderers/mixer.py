@@ -65,9 +65,6 @@ Length axis modes
 Canonical wrappers
 ------------------
 
-* ``render_with_constraint``  →
-  ``mix(n_d=0, n_p=0, n_l=0, include_constraint_inline=True,
-        c_only=False)``
 * ``render_no_distractor``    →
   ``mix(n_d=0, n_p=0, n_l=0, include_constraint_inline=False,
         c_only=False)``
@@ -400,7 +397,6 @@ def mix(
     length_range: Optional[Tuple[int, int]] = None,
     include_constraint_inline: bool = False,
     c_only: bool = False,
-    single_perm_per_variant: bool = False,
     seed: int = ASSIGNMENT_SEED,
     condition_label: str = "mix",
     merge_gap_days: int = 1,
@@ -535,11 +531,6 @@ def mix(
         scenario = scenarios[sid]
         for variant in variants:
             perms = enumerate_permutations(scenario, variant)
-            if single_perm_per_variant:
-                # Keep only the lexicographically-first permutation per
-                # (scenario, variant). Used by canon_xl_* presets to keep
-                # the prompt count to 85 × n_variants × 1 rep.
-                perms = [next(iter(perms))]
             for perm_label, seed_indices in perms:
                 key = (sid, variant, perm_label)
                 triples.append(key)

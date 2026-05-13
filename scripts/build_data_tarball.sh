@@ -2,7 +2,7 @@
 # build_data_tarball.sh — package the canonical results + prompts into a
 # single tarball for GitHub Releases.
 #
-# Output: lcvb-data-v2.tar.gz at repo root (~244MB).
+# Output: usvb-data-v2.tar.gz at repo root (~244MB).
 #
 # Contents:
 #   data/runs/canon_*/<model>/<run_id>/results.tsv   (all canonical TSVs)
@@ -12,8 +12,8 @@
 #
 # Reader UX after publishing:
 #   git clone <repo>
-#   curl -OL <release-url>/lcvb-data-v1.tar.gz
-#   tar -xzvf lcvb-data-v1.tar.gz
+#   curl -OL <release-url>/usvb-data-v1.tar.gz
+#   tar -xzvf usvb-data-v1.tar.gz
 #   python3 viewer/app.py
 #
 # Usage:
@@ -37,8 +37,8 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-OUT="lcvb-data-${VERSION}.tar.gz"
-STAGING="lcvb-data-${VERSION}"
+OUT="usvb-data-${VERSION}.tar.gz"
+STAGING="usvb-data-${VERSION}"
 
 echo "▶ Building ${OUT}"
 
@@ -49,7 +49,7 @@ import csv, sys, json
 from pathlib import Path
 csv.field_size_limit(sys.maxsize)
 
-PRESETS_TARGET = {"canon_direct": 2122, "canon_no_distractor": 2122, "canon_unified": 6366}
+PRESETS_TARGET = {"canon_no_distractor": 2122, "canon_unified": 6366}
 
 manifest = {
     "version": "${VERSION}",
@@ -94,7 +94,7 @@ if [[ -n "$DRY" ]]; then
     echo "  - generated/canon_*/*.json"
     echo "  - INTEGRITY.json"
     echo "  - README.md (tarball-internal)"
-    echo "  - lcvb-data-${VERSION}.tar.gz at repo root"
+    echo "  - usvb-data-${VERSION}.tar.gz at repo root"
     echo "Total inputs:"
     find data/runs -name "results.tsv" 2>/dev/null | wc -l | xargs echo "  results.tsv files:"
     find generated -name "*.json" 2>/dev/null | wc -l | xargs echo "  prompt JSONs:"
@@ -106,7 +106,7 @@ rm -rf "$STAGING"
 mkdir -p "$STAGING"
 
 # Copy results.tsv files (only the latest run_id per model_dir)
-for preset_dir in data/runs/canon_direct data/runs/canon_no_distractor data/runs/canon_unified; do
+for preset_dir in data/runs/canon_no_distractor data/runs/canon_unified; do
     [[ -d "$preset_dir" ]] || continue
     for model_dir in "$preset_dir"/*/; do
         [[ -d "$model_dir" ]] || continue
@@ -124,23 +124,23 @@ for preset_dir in data/runs/canon_direct data/runs/canon_no_distractor data/runs
 done
 
 # Copy the rendered prompts. The -L flag dereferences symlinks, which
-# matters because canon_direct and canon_no_distractor in this repo are
+# matters because canon_no_distractor in this repo is
 # symlinks pointing at directories outside the tracked tree. Without -L
 # the tarball would ship dangling symlinks and consumers would see no
 # prompt files for those two presets.
 mkdir -p "${STAGING}/generated"
-cp -rL generated/canon_direct generated/canon_no_distractor generated/canon_unified "${STAGING}/generated/" 2>/dev/null || true
+cp -rL generated/canon_no_distractor generated/canon_unified "${STAGING}/generated/" 2>/dev/null || true
 
 # Manifest + tarball-internal README
 cp /tmp/INTEGRITY.json "${STAGING}/INTEGRITY.json"
 
 cat > "${STAGING}/README.md" <<EOF
-# LCVB data archive ${VERSION}
+# USVB data archive ${VERSION}
 
-This tarball contains the canonical LCVB results across the full
+This tarball contains the canonical USVB results across the full
 model roster, plus the rendered prompt sets used to produce them.
 Extracted in-place over a clone of
-\`JMRLudan/LCVB_generation_evaluation\`, it provides:
+\`JMRLudan/USVB_generation_evaluation\`, it provides:
 
 - \`data/runs/canon_<preset>/<model>/<run_id>/results.tsv\` — per-row judged outputs
 - \`generated/canon_<preset>/*.json\` — the prompt files (system + user message + metadata)
@@ -149,9 +149,9 @@ Extracted in-place over a clone of
 ## Quickstart
 
 \`\`\`bash
-git clone https://github.com/JMRLudan/LCVB_generation_evaluation.git
-cd LCVB_generation_evaluation
-tar -xzvf /path/to/lcvb-data-${VERSION}.tar.gz   # extracts in-place
+git clone https://github.com/JMRLudan/USVB_generation_evaluation.git
+cd USVB_generation_evaluation
+tar -xzvf /path/to/usvb-data-${VERSION}.tar.gz   # extracts in-place
 python3 viewer/app.py
 \`\`\`
 
@@ -193,5 +193,5 @@ echo
 echo "To publish:"
 echo "  1. Tag the release: git tag ${VERSION} && git push origin ${VERSION}"
 echo "  2. Attach $OUT to the GitHub release at:"
-echo "     https://github.com/JMRLudan/LCVB_generation_evaluation/releases/new"
+echo "     https://github.com/JMRLudan/USVB_generation_evaluation/releases/new"
 echo "  3. Update README.md's curl URL if the slug changed"

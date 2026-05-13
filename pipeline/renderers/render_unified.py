@@ -3,8 +3,9 @@
 render_unified.py — the unified canon condition.
 ==================================================
 
-Single distractor-bearing canon preset. Replaces the previous three-tier
-canon_uniform_short / medium / long split. Each row gets:
+Single distractor-bearing canon preset (canon_unified): log-uniform char
+budget over [3 000, 250 000] paired with uniform [0, 1] placement, both
+stratified within scenario. Each row gets:
 
 * a per-cell stratified placement frac in [0, 1] (where to put the
   evidence in the conversation history),
@@ -19,7 +20,7 @@ giving ~6366 prompts total at the 5-variant scenario set.
 Thin wrapper over ``mixer.mix()`` with:
 
     n_distractor_draws        = 3       (3× resample per tuple)
-    n_distractors_per_prompt  = 3       (LCVB canon convention)
+    n_distractors_per_prompt  = 3       (USVB canon convention)
     n_placements              = 1       (uniform_stratified single)
     n_lengths                 = 1
     placement_mode            = "uniform_stratified"

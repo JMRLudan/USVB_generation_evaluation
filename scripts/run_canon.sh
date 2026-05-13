@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
-# run_canon.sh — canonical single-model launcher for the LCVB benchmark.
+# run_canon.sh — canonical single-model launcher for the USVB benchmark.
 #
-# Runs all 3 canon presets (canon_direct, canon_no_distractor,
-# canon_unified) for a single subject model, in parallel, with the
-# Haiku 4.5 with-analysis judge inline. Settings match the inference
-# contract documented in INFERENCE.md.
+# Runs both canon presets (canon_no_distractor, canon_unified) for a
+# single subject model, in parallel, with the gemini-3-flash judge
+# inline. Settings match the inference contract documented in INFERENCE.md.
 #
 # Usage:
 #   bash scripts/run_canon.sh --model <slug>
@@ -89,21 +88,12 @@ echo "  max-tokens:   $MAX_TOKENS"
 echo "  output dir:   data/runs/<preset>/${DIR_TAG}/<run_id>/"
 echo
 
-# ── Verify pipeline patches are in place (defensive) ──────────────────
-for grep_check in "is_insufficient_credits" "is_prompt_too_large" "_evidence_seeds_for"; do
-    if ! grep -q "$grep_check" pipeline/run.py pipeline/multi_model_runner.py 2>/dev/null; then
-        echo "✗ Pipeline patch missing: $grep_check"
-        echo "  This script requires the post-2026-05-04 pipeline."
-        exit 1
-    fi
-done
-
-# ── Launch all 3 presets in parallel ──────────────────────────────────
+# ── Launch both presets in parallel ───────────────────────────────────
 PIDS=()
 run_id="$(date +%Y%m%d_%H%M%S)"
 [[ -n "$MODEL_TAG" ]] && run_id="${run_id}_${MODEL_TAG}"
 
-for preset in canon_direct canon_no_distractor canon_unified; do
+for preset in canon_no_distractor canon_unified; do
     logfile="${LOG_DIR}/${DIR_TAG}_${preset}.log"
     nohup python3 pipeline/run.py \
         --prompts-dir "generated/${preset}" \
@@ -112,7 +102,6 @@ for preset in canon_direct canon_no_distractor canon_unified; do
         ${MODEL_TAG:+--model-tag "$MODEL_TAG"} \
         --concurrency "$CONCURRENCY" \
         --max-tokens "$MAX_TOKENS" \
-        --judge-mode with_analysis \
         --run-id "$run_id" \
         --run \
         >> "$logfile" 2>&1 &

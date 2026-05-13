@@ -1,7 +1,7 @@
-# LCVB scripts — reproduction recipe
+# USVB scripts — reproduction recipe
 
 The `scripts/` directory holds four utilities for running, monitoring,
-summarizing, and publishing LCVB canon evaluations.
+summarizing, and publishing USVB canon evaluations.
 
 ```
 scripts/
@@ -17,9 +17,10 @@ scripts/
 1. Python 3.10+ with the runtime deps installed —
    `pip install -r requirements.txt` from the repo root.
 2. API keys at repo root: copy `.env.example` to `.env` and fill in your
-   values (`ANTHROPIC_API_KEY` is required for the judge; `OPENROUTER_API_KEY`
-   is required for any non-Anthropic subject model).
-3. The 85-scenario canon prompts in `generated/canon_{direct,no_distractor,unified}/`
+   values (`GEMINI_API_KEY` is required for the judge; `OPENROUTER_API_KEY`
+   is required for any non-Anthropic subject model; `ANTHROPIC_API_KEY` for
+   Anthropic subjects).
+3. The 85-scenario canon prompts in `generated/canon_{no_distractor,unified}/`
    (extracted from the data tarball — see top-level `README.md`).
 
 ## Run a single model (canonical recipe)
@@ -41,9 +42,9 @@ bash scripts/run_canon.sh --model openai/gpt-oss-20b
 bash scripts/run_canon.sh --model deepseek/deepseek-v4-pro
 ```
 
-Each invocation runs all 3 presets (canon_direct, canon_no_distractor,
-canon_unified) in parallel, judges each row inline with Haiku 4.5
-with-analysis, and prints a per-model card on completion.
+Each invocation runs both canon presets (canon_no_distractor and
+canon_unified) in parallel, judges each row inline with gemini-3-flash,
+and prints a per-model card on completion.
 
 ## Reproduce the open-source roster + ablation
 

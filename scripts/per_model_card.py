@@ -23,7 +23,7 @@ REPO = Path(__file__).resolve().parent.parent
 RUNS_DIR = REPO / "data" / "runs"
 JOURNAL_PATH = REPO / "analysis" / "per_model_cards.jsonl"
 
-PRESETS = ["canon_direct", "canon_no_distractor", "canon_unified"]
+PRESETS = ["canon_no_distractor", "canon_unified"]
 
 
 def _is_yes(v): return str(v).strip().upper() == "YES"
@@ -45,12 +45,18 @@ def metrics_for(tsv: Path) -> dict | None:
     def pct(num, den):
         return round(100 * num / den, 2) if den else None
 
-    sr  = sum(1 for r in rows if _is_true(r.get("vigilance"))   and not (r.get("raw_response","") or "").startswith("ERROR"))
-    cm_yes  = sum(1 for r in rows if _is_yes(r.get("constraint_mentioned")))
-    cm_set  = sum(1 for r in rows if str(r.get("constraint_mentioned","")).upper() in ("YES","NO"))
-    mue_yes = sum(1 for r in rows if _is_yes(r.get("mentions_user_evidence")))
-    mue_set = sum(1 for r in rows if str(r.get("mentions_user_evidence","")).upper() in ("YES","NO"))
-    fa  = sum(1 for r in rows if _is_true(r.get("false_alarm")))
+    def _sr_value(r):
+        # Prefer the v2 column; fall back to the legacy "vigilance" for
+        # rows written before the rename.
+        return r.get("vigilance_refuse_only") or r.get("vigilance")
+
+    sr  = sum(1 for r in rows
+              if _is_true(_sr_value(r))
+              and not (r.get("raw_response","") or "").startswith("ERROR"))
+    cm_yes = sum(1 for r in rows if _is_yes(r.get("constraint_mentioned")))
+    cm_set = sum(1 for r in rows if str(r.get("constraint_mentioned","")).upper() in ("YES","NO"))
+    sm_yes = sum(1 for r in rows if _is_yes(r.get("sufficiently_modified")))
+    sm_set = sum(1 for r in rows if str(r.get("sufficiently_modified","")).upper() in ("YES","NO"))
     ab  = sum(1 for r in rows if _is_true(r.get("abstained")))
 
     # Wilson 95% CI for SR
@@ -70,8 +76,7 @@ def metrics_for(tsv: Path) -> dict | None:
         "SR": pct(sr, n_ok),
         "SR_ci95_lo": ci[0], "SR_ci95_hi": ci[1],
         "CM": pct(cm_yes, cm_set),
-        "MUE": pct(mue_yes, mue_set) if mue_set else None,
-        "FA": pct(fa, n_ok),
+        "SM": pct(sm_yes, sm_set) if sm_set else None,
         "abstain": pct(ab, n_ok),
     }
 
@@ -97,8 +102,6 @@ def card_for_model_dir(model_dir: str) -> dict:
     # Vigilance gap
     u = out["presets"].get("canon_unified", {}).get("SR")
     n = out["presets"].get("canon_no_distractor", {}).get("SR")
-    d = out["presets"].get("canon_direct", {}).get("SR")
-    out["vigilance_gap_direct_vs_unified"] = round(d - u, 2) if (d is not None and u is not None) else None
     out["vigilance_gap_no_dist_vs_unified"] = round(n - u, 2) if (n is not None and u is not None) else None
     return out
 
@@ -107,18 +110,16 @@ def print_card(card: dict):
     print(f"\n{'='*70}")
     print(f"  {card['model_dir']}  @ {card['timestamp']}")
     print(f"{'='*70}")
-    print(f"  {'PRESET':<22} {'N':>6} {'SR%':>7} {'CI95':>14} {'CM%':>6} {'MUE%':>6} {'FA%':>6} {'AB%':>6}")
-    print(f"  {'-'*22} {'-'*6} {'-'*7} {'-'*14} {'-'*6} {'-'*6} {'-'*6} {'-'*6}")
+    print(f"  {'PRESET':<22} {'N':>6} {'SR%':>7} {'CI95':>14} {'CM%':>6} {'SM%':>6} {'AB%':>6}")
+    print(f"  {'-'*22} {'-'*6} {'-'*7} {'-'*14} {'-'*6} {'-'*6} {'-'*6}")
     for preset in PRESETS:
         m = card["presets"].get(preset)
         if not m:
             print(f"  {preset:<22} (no data)")
             continue
         ci = f"[{m['SR_ci95_lo']:.1f}, {m['SR_ci95_hi']:.1f}]" if m['SR_ci95_lo'] is not None else "—"
-        mue = f"{m['MUE']:.1f}" if m['MUE'] is not None else "—"
-        print(f"  {preset:<22} {m['n_ok']:>6} {m['SR']:>6.2f}% {ci:>14} {m['CM']:>5.1f}% {mue:>5}% {m['FA']:>5.1f}% {m['abstain']:>5.1f}%")
-    if card['vigilance_gap_direct_vs_unified'] is not None:
-        print(f"  Vigilance gap (direct − unified):   {card['vigilance_gap_direct_vs_unified']:+.2f} pp")
+        sm = f"{m['SM']:.1f}" if m['SM'] is not None else "—"
+        print(f"  {preset:<22} {m['n_ok']:>6} {m['SR']:>6.2f}% {ci:>14} {m['CM']:>5.1f}% {sm:>5}% {m['abstain']:>5.1f}%")
     if card['vigilance_gap_no_dist_vs_unified'] is not None:
         print(f"  Vigilance gap (no_dist − unified):  {card['vigilance_gap_no_dist_vs_unified']:+.2f} pp")
 

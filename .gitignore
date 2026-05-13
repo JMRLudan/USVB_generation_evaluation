@@ -4,12 +4,15 @@
 !.env.example
 
 # Generated prompt files — distributed via the data tarball
-# (lcvb-data-v1.tar.gz on GitHub releases), not via git
+# on GitHub releases, not via git
 generated/
 
 # The data tarball itself — produced at repo root by
 # scripts/build_data_tarball.sh. Published as a GitHub release artifact.
-lcvb-data-*.tar.gz
+# Pattern matches both lcvb-data-*.tar.gz (legacy) and usvb-data-*.tar.gz,
+# plus any split-part files (.tar.gz.part00, .part01, ...).
+*vb-data-*.tar.gz
+*vb-data-*.tar.gz.part*
 
 # Run outputs — results + checkpoints, distributed via the data tarball
 data/runs/
@@ -34,8 +37,8 @@ JOURNAL.md
 CLAUDE.md
 analysis/
 
-# In-place TSV patch backups (created by rejudge_failed.py and
-# batch_judge.py; safe to discard once the patch is verified)
+# In-place TSV patch backups (created by any historical judge rerun
+# tooling; safe to discard once the patch is verified)
 *.pre_rejudge_*
 *.pre_batchjudge_*
 *.before_clean_*

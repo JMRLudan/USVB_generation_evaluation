@@ -2,7 +2,7 @@
 batch_openai.py — OpenAI Batch API adapter.
 ============================================
 
-Wraps OpenAI's Batch API for LCVB canon runs. 50% discount on the
+Wraps OpenAI's Batch API for USVB canon runs. 50% discount on the
 real-time price; 24-hour completion window.
 
 Lifecycle differs slightly from Anthropic's batches: OpenAI requires
@@ -146,7 +146,7 @@ class OpenAIBatchAdapter:
       * 50 000 enqueued tokens per organization tier (varies; OpenAI
         admin console shows actual cap)
 
-    For LCVB canon (~6 366 unified prompts), one file fits comfortably.
+    For USVB canon (~6 366 unified prompts), one file fits comfortably.
     """
 
     PROVIDER_NAME = "openai"
@@ -236,7 +236,7 @@ class OpenAIBatchAdapter:
             buf.write(json.dumps(rec, ensure_ascii=False).encode("utf-8"))
         buf.seek(0)
         uploaded = self._client.files.create(
-            file=("lcvb_batch.jsonl", buf, "application/jsonl"),
+            file=("usvb_batch.jsonl", buf, "application/jsonl"),
             purpose="batch",
         )
 

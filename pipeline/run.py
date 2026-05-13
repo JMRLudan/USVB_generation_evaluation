@@ -1,25 +1,10 @@
 #!/usr/bin/env python3
 """
-run.py — execute a rendered condition against a model.
-=======================================================
+run.py — canonical canon-preset runner.
 
-Reads prompt JSON files from one of the renderer output directories
-(`generated/with_constraint/`, `generated/fixed_locations/`, or
-`generated/continuous_random/`), sends each one to the target model via
-the canonical `OpenRouterClient`, judges the response with Haiku, and
-writes per-item rows to a TSV.
-
-Supports:
-  * Anthropic-native + OpenRouter routing (auto-detected by model slug).
-  * Resume via `--run-id <existing_id>` — uses the pipe-delimited
-    `item_key()` from `multi_model_runner` for checkpoint de-dup.
-  * `--limit N` to cap items (for cost-bounded test runs).
-
-Output layout:
-  data/runs/<condition>/<model_slug>/<run_id>/
-      results.tsv
-      checkpoint.txt
-      meta.json
+Takes a prompts directory under `generated/{canon_no_distractor,canon_unified}/`,
+runs the subject model, judges each response with gemini-3-flash-preview, and
+writes results.tsv into data/runs/{preset}/{model}/{run_id}/.
 """
 
 from __future__ import annotations
@@ -38,11 +23,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 csv.field_size_limit(sys.maxsize)
 
-from eval_pipeline import (  # noqa: E402
-    EvalItem, score_result,
-    load_scenarios, SCENARIOS_TSV,
-    get_constraint_grounding_seeds, enumerate_permutations,
-)
+from eval_pipeline import EvalItem, score_result  # noqa: E402
 from openrouter_client import OpenRouterClient  # noqa: E402
 from multi_model_runner import (  # noqa: E402
     openrouter_chat, anthropic_chat, judge_response, item_key,
@@ -167,35 +148,13 @@ async def run(
     t_start = time.monotonic()
     aborted = False
 
-    # Pre-load scenarios so we can re-derive evidence_seeds per item for
-    # the with_analysis judge mode (mirrors what rejudge_failed.py does).
-    # Without these seeds the judge sees "(none)" for user-stated facts
-    # and MUE comes back nonsensical even on with_analysis runs.
-    scenarios_by_id = load_scenarios(SCENARIOS_TSV, validated_only=True)
-
-    def _evidence_seeds_for(item: EvalItem) -> list[str]:
-        scenario = scenarios_by_id.get(item.scenario_id)
-        if not scenario:
-            return []
-        # Strip the -d{n}-l{n} suffix to get the base perm label that
-        # enumerate_permutations returns.
-        base_perm = item.permutation.split("-", 1)[0] if "-" in item.permutation else item.permutation
-        for perm_l, idx in enumerate_permutations(scenario, item.evidence_variant):
-            if perm_l == base_perm:
-                return get_constraint_grounding_seeds(scenario, item.evidence_variant, idx)
-        return []
-
-    # Schema MUST stay in sync with batch_runner.write_results_tsv —
-    # particularly the mentions_user_evidence column added 2026-04-30
-    # for the with_analysis judge mode. Without this column here, the
-    # judge's MUE field gets silently dropped on the run.py path and the
-    # viewer's MUE chart breaks for any model that ran via run.py.
+    # Schema must stay in sync with batch_runner.write_results_tsv.
     fieldnames = [
         "run_id", "condition", "scenario_id", "evidence_variant", "permutation",
-        "expected_answer", "raw_response", "recommendation", "flagged",
-        "constraint_mentioned", "heavily_modified", "mentions_user_evidence",
+        "expected_answer", "raw_response", "recommendation",
+        "constraint_mentioned", "sufficiently_modified",
         "explanation",
-        "parse_error", "vigilance", "general_flag", "false_alarm",
+        "parse_error", "vigilance_refuse_only", "abstain_type",
         "choice_correct", "abstained", "input_tokens", "output_tokens",
         "judge_input_tokens", "judge_output_tokens", "latency_ms",
     ]
@@ -263,14 +222,13 @@ async def run(
                                 "permutation": item.permutation,
                                 "expected_answer": item.expected_answer,
                                 "raw_response": f"ERROR: {resp['error']}",
-                                "recommendation": None, "flagged": None,
+                                "recommendation": None,
                                 "constraint_mentioned": None,
-                                "heavily_modified": None,
-                                "mentions_user_evidence": None,
+                                "sufficiently_modified": None,
                                 "explanation": None, "parse_error": True,
-                                "vigilance": None, "general_flag": None,
-                                "false_alarm": None, "choice_correct": None,
-                                "abstained": None,
+                                "vigilance_refuse_only": None,
+                                "abstain_type": None,
+                                "choice_correct": None, "abstained": None,
                                 "input_tokens": 0, "output_tokens": 0,
                                 "judge_input_tokens": 0,
                                 "judge_output_tokens": 0,
@@ -281,7 +239,6 @@ async def run(
                                 client, resp["content"],
                                 item.query_with_options,
                                 item.constraint_description,
-                                evidence_seeds=_evidence_seeds_for(item),
                             )
                             scores = score_result(parsed, item.expected_answer)
                             row = {
@@ -292,18 +249,15 @@ async def run(
                                 "expected_answer": item.expected_answer,
                                 "raw_response": resp["content"],
                                 "recommendation": parsed.get("recommendation"),
-                                "flagged": parsed.get("flagged"),
                                 "constraint_mentioned":
                                     parsed.get("constraint_mentioned"),
-                                "heavily_modified":
-                                    parsed.get("heavily_modified"),
-                                "mentions_user_evidence":
-                                    parsed.get("mentions_user_evidence"),
+                                "sufficiently_modified":
+                                    parsed.get("sufficiently_modified"),
                                 "explanation": parsed.get("explanation"),
                                 "parse_error": parsed.get("parse_error", False),
-                                "vigilance": scores["vigilance"],
-                                "general_flag": scores["general_flag"],
-                                "false_alarm": scores["false_alarm"],
+                                "vigilance_refuse_only":
+                                    scores["vigilance_refuse_only"],
+                                "abstain_type": scores["abstain_type"],
                                 "choice_correct": scores["choice_correct"],
                                 "abstained": scores["abstained"],
                                 "input_tokens": resp.get("input_tokens", 0),
@@ -394,20 +348,6 @@ def main():
     ap.add_argument("--cost-abort", type=float, default=0.0,
                     help="Abort the run if total cost exceeds this USD (0 = no cap).")
     ap.add_argument(
-        "--judge-mode",
-        choices=["pure_eval", "with_analysis"],
-        default=None,
-        help=(
-            "Which judge prompt to use. Omit to use the global "
-            "eval_pipeline.JUDGE_MODE (currently 'pure_eval'). "
-            "'pure_eval' is the 4-field schema (recommendation/flagged/"
-            "constraint_mentioned/heavily_modified). 'with_analysis' adds "
-            "MENTIONS_USER_EVIDENCE — the judge sees the constraint-grounding "
-            "seed and decides whether the response surfaced it. with_analysis "
-            "populates the mentions_user_evidence column; pure_eval leaves it blank."
-        ),
-    )
-    ap.add_argument(
         "--max-tokens", type=int, default=30000,
         help="Max output tokens per call (default 30000). Pass smaller "
              "to reproduce a tighter cap (e.g. 10000 to match the "
@@ -437,12 +377,6 @@ def main():
     ap.add_argument("--run", action="store_true",
                     help="Actually execute (without this flag it's a dry run).")
     args = ap.parse_args()
-
-    # Set the global judge mode before any judge calls happen.
-    if args.judge_mode:
-        import eval_pipeline
-        eval_pipeline.JUDGE_MODE = args.judge_mode
-        print(f"Judge mode: {args.judge_mode}")
 
     prompts_dir = Path(args.prompts_dir)
     condition = args.condition or prompts_dir.name

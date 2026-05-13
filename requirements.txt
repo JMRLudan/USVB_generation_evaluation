@@ -5,6 +5,7 @@
 # Core pipeline (rendering, evaluation, batch adapters)
 anthropic>=0.40.0
 aiohttp>=3.9.0
+google-genai>=0.3.0
 
 # Viewer (only needed if you plan to run `python3 viewer/app.py`)
 flask>=3.0

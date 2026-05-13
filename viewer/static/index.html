@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>LCVB — canon_unified analysis</title>
+<title>USVB — canon_unified analysis</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
   :root {
@@ -110,72 +110,22 @@
   body[data-tab="charts"]    .scenarios-only,
   body[data-tab="charts"]    .results-only,
   body[data-tab="charts"]    .prompts-only,
-  body[data-tab="charts"]    .paper-only,
-  body[data-tab="charts"]    .tables-only,
-  body[data-tab="charts"]    .trends-only,
-  .xl-only, .surface-only, .frontier-only { display: none !important; }
+  .surface-only, .frontier-only { display: none !important; }
   body[data-tab="scenarios"] .charts-only,
   body[data-tab="scenarios"] .results-only,
-  body[data-tab="scenarios"] .prompts-only,
-  body[data-tab="scenarios"] .paper-only,
-  body[data-tab="scenarios"] .tables-only,
-  body[data-tab="scenarios"] .trends-only    { display: none !important; }
+  body[data-tab="scenarios"] .prompts-only      { display: none !important; }
   body[data-tab="results"]   .charts-only,
   body[data-tab="results"]   .scenarios-only,
-  body[data-tab="results"]   .prompts-only,
-  body[data-tab="results"]   .paper-only,
-  body[data-tab="results"]   .tables-only,
-  body[data-tab="results"]   .trends-only    { display: none !important; }
+  body[data-tab="results"]   .prompts-only      { display: none !important; }
   body[data-tab="prompts"]   .charts-only,
   body[data-tab="prompts"]   .scenarios-only,
-  body[data-tab="prompts"]   .results-only,
-  body[data-tab="prompts"]   .paper-only,
-  body[data-tab="prompts"]   .tables-only,
-  body[data-tab="prompts"]   .trends-only    { display: none !important; }
-  body[data-tab="paper"]     .charts-only,
-  body[data-tab="paper"]     .scenarios-only,
-  body[data-tab="paper"]     .results-only,
-  body[data-tab="paper"]     .prompts-only,
-  body[data-tab="paper"]     .tables-only,
-  body[data-tab="paper"]     .trends-only,
-  .xl-only, .surface-only, .frontier-only { display: none !important; }
-  body[data-tab="tables"]    .charts-only,
-  body[data-tab="tables"]    .scenarios-only,
-  body[data-tab="tables"]    .results-only,
-  body[data-tab="tables"]    .prompts-only,
-  body[data-tab="tables"]    .paper-only,
-  body[data-tab="tables"]    .trends-only,
-  .xl-only, .surface-only, .frontier-only { display: none !important; }
-  body[data-tab="trends"]    .charts-only,
-  body[data-tab="trends"]    .scenarios-only,
-  body[data-tab="trends"]    .results-only,
-  body[data-tab="trends"]    .prompts-only,
-  body[data-tab="trends"]    .paper-only,
-  body[data-tab="trends"]    .tables-only,
-  body[data-tab="trends"]    .xl-only,
-  body[data-tab="trends"]    .surface-only,
-  body[data-tab="trends"]    .frontier-only  { display: none !important; }
+  body[data-tab="prompts"]   .results-only      { display: none !important; }
 
-  /* Three new tabs: XL, Surface, Frontier */
-  body[data-tab="xl"]       .charts-only,
-  body[data-tab="xl"]       .scenarios-only,
-  body[data-tab="xl"]       .results-only,
-  body[data-tab="xl"]       .prompts-only,
-  body[data-tab="xl"]       .paper-only,
-  body[data-tab="xl"]       .tables-only,
-  body[data-tab="xl"]       .trends-only,
-  body[data-tab="xl"]       .surface-only,
-  body[data-tab="xl"]       .frontier-only  { display: none !important; }
-  body[data-tab="xl"]       .xl-only        { display: revert !important; }
-
+  /* Two new tabs: Surface, Frontier */
   body[data-tab="surface"]  .charts-only,
   body[data-tab="surface"]  .scenarios-only,
   body[data-tab="surface"]  .results-only,
   body[data-tab="surface"]  .prompts-only,
-  body[data-tab="surface"]  .paper-only,
-  body[data-tab="surface"]  .tables-only,
-  body[data-tab="surface"]  .trends-only,
-  body[data-tab="surface"]  .xl-only,
   body[data-tab="surface"]  .frontier-only  { display: none !important; }
   body[data-tab="surface"]  .surface-only   { display: revert !important; }
 
@@ -183,143 +133,8 @@
   body[data-tab="frontier"] .scenarios-only,
   body[data-tab="frontier"] .results-only,
   body[data-tab="frontier"] .prompts-only,
-  body[data-tab="frontier"] .paper-only,
-  body[data-tab="frontier"] .tables-only,
-  body[data-tab="frontier"] .trends-only,
-  body[data-tab="frontier"] .xl-only,
-  body[data-tab="frontier"] .surface-only   { display: none !important; }
-  body[data-tab="frontier"] .frontier-only  { display: revert !important; }
-
-  /* Tables tab */
-  .tab-grid-tables {
-    display: grid; grid-template-columns: 320px 1fr; gap: 16px;
-  }
-  .tbl-controls {
-    background: var(--panel); border: 1px solid var(--rule);
-    border-radius: 8px; padding: 14px;
-    max-height: 800px; overflow: auto;
-  }
-  .tbl-controls h3 {
-    font-size: 12px; font-weight: 600; margin: 0 0 6px;
-    text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted);
-  }
-  .tbl-controls .group { margin-bottom: 14px; }
-  .tbl-controls label {
-    display: block; font-size: 12px; padding: 3px 0; cursor: pointer;
-  }
-  .tbl-controls input[type="checkbox"], .tbl-controls input[type="radio"] {
-    margin-right: 6px;
-  }
-  .tbl-controls .filter-group {
-    margin-top: 4px; padding-left: 14px; border-left: 2px solid var(--rule);
-    font-size: 12px;
-  }
-  .tbl-controls .filter-group .vals {
-    max-height: 140px; overflow-y: auto; font-size: 11px;
-  }
-  .tbl-controls .order-up-down {
-    font-size: 11px; color: var(--muted); margin-left: 4px;
-  }
-  .tbl-pane {
-    background: var(--panel); border: 1px solid var(--rule);
-    border-radius: 8px; padding: 14px;
-  }
-  .tbl-meta {
-    font-size: 11px; color: var(--muted); margin-bottom: 8px;
-  }
-  table.pivot-table {
-    border-collapse: collapse; width: 100%; font-size: 12px;
-    font-variant-numeric: tabular-nums;
-  }
-  table.pivot-table th, table.pivot-table td {
-    padding: 4px 8px; border-bottom: 1px solid var(--rule);
-    text-align: right; white-space: nowrap;
-  }
-  table.pivot-table th:first-child, table.pivot-table td:first-child,
-  table.pivot-table th.dim, table.pivot-table td.dim { text-align: left; }
-  table.pivot-table th {
-    color: var(--muted); font-weight: 500; background: #fafaf6;
-    position: sticky; top: 0;
-  }
-  .ci-bar {
-    position: relative; display: inline-block;
-    width: 80px; height: 8px; background: #efece4;
-    border-radius: 2px; vertical-align: middle; margin-right: 6px;
-  }
-  .ci-bar .ci-band {
-    position: absolute; top: 0; bottom: 0;
-    background: var(--accent); opacity: 0.3; border-radius: 2px;
-  }
-  .ci-bar .ci-mid {
-    position: absolute; top: -2px; bottom: -2px;
-    width: 2px; background: var(--accent);
-  }
-  .pivot-empty {
-    color: var(--muted); padding: 24px 0; text-align: center; font-style: italic;
-  }
-  .pivot-row-preset-direct       { background: rgba(231, 240, 236, 0.35); }
-  .pivot-row-preset-no-distractor{ background: rgba(255, 244, 204, 0.35); }
-  .pivot-row-preset-unified      { background: rgba(255, 255, 255, 0); }
-  .copy-pivot-btn {
-    font: inherit; padding: 3px 8px; border: 1px solid var(--rule);
-    border-radius: 4px; background: white; cursor: pointer; font-size: 11px;
-  }
-  .copy-pivot-btn:hover { background: var(--accent-bg); }
-
-  /* Paper tab */
-  .paper-grid { display: grid; grid-template-columns: 320px 1fr; gap: 16px; }
-  .paper-list-wrap, .paper-detail {
-    background: var(--panel); border: 1px solid var(--rule);
-    border-radius: 8px; padding: 14px; max-height: 800px; overflow: auto;
-  }
-  .paper-item {
-    padding: 8px 10px; border-radius: 4px; cursor: pointer;
-    border-bottom: 1px dotted var(--rule); font-size: 12px;
-  }
-  .paper-item:hover { background: var(--accent-bg); }
-  .paper-item.selected { background: var(--accent); color: var(--accent-ink); }
-  .paper-item.selected .muted { color: rgba(255,255,255,0.85); }
-  .paper-item .id {
-    font-weight: 600; font-variant-numeric: tabular-nums;
-    margin-right: 6px;
-  }
-  .paper-item .title { font-weight: 500; }
-  .paper-item .question {
-    color: var(--muted); font-size: 11px; margin-top: 2px;
-  }
-  .paper-item .files {
-    color: var(--muted); font-size: 10px; margin-top: 2px;
-  }
-  .paper-item.missing .id { color: var(--muted); }
-  .paper-item.missing { opacity: 0.55; }
-
-  .paper-table {
-    border-collapse: collapse; font-size: 12px; width: 100%;
-    font-variant-numeric: tabular-nums;
-  }
-  .paper-table th, .paper-table td {
-    padding: 4px 8px; border-bottom: 1px solid var(--rule);
-    text-align: right; white-space: nowrap;
-  }
-  .paper-table th:first-child, .paper-table td:first-child { text-align: left; }
-  .paper-table th { color: var(--muted); font-weight: 500;
-    background: #fafaf6; position: sticky; top: 0; }
-  .paper-figure-img { max-width: 100%; height: auto; display: block; margin: 8px 0; }
-  .paper-tools {
-    display: flex; gap: 8px; margin-bottom: 10px; align-items: center;
-    font-size: 12px;
-  }
-  .paper-tools button {
-    font: inherit; padding: 3px 8px; border: 1px solid var(--rule);
-    border-radius: 4px; background: white; cursor: pointer;
-  }
-  .paper-tools button:hover { background: var(--accent-bg); }
-  .latex-block {
-    background: #2b2b2b; color: #eaeaea; padding: 10px 12px;
-    border-radius: 4px; white-space: pre-wrap; word-wrap: break-word;
-    font: 11px/1.5 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-    max-height: 360px; overflow: auto;
-  }
+  body[data-tab="frontier"] .surface-only  { display: none !important; }
+  body[data-tab="frontier"] .frontier-only { display: revert !important; }
 
   /* Results tab */
   .res-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 16px; }
@@ -336,10 +151,11 @@
     border-radius: 4px;
   }
   .res-row {
-    display: grid; grid-template-columns: 56px 38px 1fr 32px;
+    display: grid; grid-template-columns: 56px 38px 165px 1fr 32px;
     gap: 6px; padding: 4px 6px; font-size: 12px; cursor: pointer;
     border-bottom: 1px dotted var(--rule);
     font-variant-numeric: tabular-nums;
+    align-items: center;
   }
   .res-row:hover { background: var(--accent-bg); }
   .res-row.selected { background: var(--accent); color: var(--accent-ink); }
@@ -353,6 +169,23 @@
   .res-row .badge.err  { background: var(--danger, #a63a3a); color: white; }
   .res-row .badge.peq1 { background: #c1601a; color: white; }
   .res-row .badge.vig  { background: var(--accent); color: white; }
+  /* Inline judge pills shown in the row picker — compact CM / SR / REC at a glance */
+  .res-row .judge-pills {
+    display: inline-flex; gap: 3px; font-variant-numeric: tabular-nums;
+  }
+  .res-row .jp {
+    display: inline-block; padding: 0 5px; border-radius: 2px;
+    font-size: 10px; line-height: 14px; font-weight: 600;
+    border: 1px solid transparent;
+  }
+  .res-row .jp.rec       { background: #f5efe2; color: #6b5630; border-color: #d4c08a; }
+  .res-row .jp.rec.refuse { background: #d9e8d5; color: #2f5128; border-color: #88b07d; }
+  .res-row .jp.rec.hedge  { background: #f0e3c2; color: #7a5a16; border-color: #d1b568; }
+  .res-row .jp.cm-yes    { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .res-row .jp.cm-no     { background: #ece9df; color: #807a6c; border-color: #c8c1ad; }
+  .res-row .jp.sr-1      { background: #2f5128; color: white; border-color: #2f5128; }
+  .res-row .jp.sr-0      { background: #b1483b; color: white; border-color: #b1483b; }
+  .res-row.selected .jp  { filter: brightness(1.1); }
   .res-detail pre.raw {
     background: var(--user); padding: 8px 10px; border-radius: 4px;
     white-space: pre-wrap; word-wrap: break-word;
@@ -371,11 +204,49 @@
   .res-detail .kv .v { font-variant-numeric: tabular-nums; }
 
   /* Prompts tab */
-  .pmt-grid { display: grid; grid-template-columns: 320px 1fr; gap: 16px; }
-  .pmt-list-wrap, .pmt-detail {
+  .pmt-grid { display: grid; grid-template-columns: 280px 1fr 380px; gap: 16px; }
+  .pmt-list-wrap, .pmt-detail, .pmt-gens-wrap {
     background: var(--panel); border: 1px solid var(--rule);
     border-radius: 8px; padding: 12px; max-height: 720px; overflow: auto;
   }
+  .pmt-gens-wrap h4 {
+    margin: 0 0 6px 0; font-size: 12px; text-transform: uppercase;
+    letter-spacing: 0.05em; color: var(--muted); font-weight: 600;
+  }
+  .pmt-gens-meta {
+    font-size: 11px; color: var(--muted); margin-bottom: 8px;
+  }
+  .pmt-gen-row {
+    border: 1px solid var(--rule); border-radius: 4px;
+    padding: 6px 8px; margin-bottom: 6px; font-size: 11px;
+    cursor: pointer;
+  }
+  .pmt-gen-row:hover { background: var(--accent-bg); }
+  .pmt-gen-row .pmt-gen-model {
+    font-weight: 600; font-size: 12px; margin-bottom: 3px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .pmt-gen-row .pmt-gen-pills {
+    display: inline-flex; gap: 3px; margin-left: auto;
+  }
+  .pmt-gen-row .jp {
+    display: inline-block; padding: 0 5px; border-radius: 2px;
+    font-size: 10px; line-height: 14px; font-weight: 600;
+    border: 1px solid transparent;
+  }
+  .pmt-gen-row .jp.rec        { background: #f5efe2; color: #6b5630; border-color: #d4c08a; }
+  .pmt-gen-row .jp.rec.refuse { background: #d9e8d5; color: #2f5128; border-color: #88b07d; }
+  .pmt-gen-row .jp.rec.hedge  { background: #f0e3c2; color: #7a5a16; border-color: #d1b568; }
+  .pmt-gen-row .jp.cm-yes     { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .pmt-gen-row .jp.cm-no      { background: #ece9df; color: #807a6c; border-color: #c8c1ad; }
+  .pmt-gen-row .jp.sr-1       { background: #2f5128; color: white; border-color: #2f5128; }
+  .pmt-gen-row .jp.sr-0       { background: #b1483b; color: white; border-color: #b1483b; }
+  .pmt-gen-row .pmt-gen-excerpt {
+    color: var(--muted); white-space: nowrap; overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pmt-gen-row.err   { background: rgba(166,58,58,0.06); border-color: #d4a8a8; }
+  .pmt-gen-row.pe    { background: rgba(193,96,26,0.06); border-color: #d4b58a; }
   .pmt-list { font-size: 12px; }
   .pmt-row {
     display: grid; grid-template-columns: 56px 36px 1fr;
@@ -578,131 +449,11 @@
   }
   .scen-empty { color: var(--muted); padding: 24px; text-align: center; font-style: italic; }
 
-  /* Trends tab — paper-ready findings cards */
-  .trends-stack {
-    display: flex; flex-direction: column; gap: 18px;
-    max-width: 1100px;
-  }
-  .trend-card {
-    background: var(--panel); border: 1px solid var(--rule);
-    border-radius: 8px; padding: 16px 18px;
-  }
-  .trend-card .trend-title {
-    font-size: 15px; font-weight: 600; margin: 0 0 6px;
-    letter-spacing: -0.01em;
-  }
-  .trend-card .trend-finding {
-    font-size: 13px; line-height: 1.5;
-    color: var(--ink); margin: 0 0 12px;
-    border-left: 3px solid var(--accent);
-    padding: 4px 0 4px 10px;
-  }
-  .trend-card .trend-method {
-    font-size: 11px; color: var(--muted);
-    margin: 10px 0 0; line-height: 1.45;
-  }
-  .trend-card .trend-method::before { content: "Method.  "; font-weight: 600; }
-  .trend-card .trend-table-wrap {
-    overflow-x: auto; margin: 0;
-  }
-
-  /* Examples expandable section under each trend card */
-  .trend-examples-bar {
-    display: flex; align-items: center; gap: 12px;
-    margin-top: 10px; padding-top: 10px;
-    border-top: 1px solid var(--rule);
-    font-size: 12px;
-  }
-  .trend-ex-toggle {
-    font: inherit; padding: 4px 12px; border: 1px solid var(--rule);
-    border-radius: 4px; background: white; cursor: pointer; color: var(--ink);
-  }
-  .trend-ex-toggle:hover { background: var(--accent-bg); }
-  .trend-ex-source { color: var(--muted); font-size: 11px; }
-  .trend-ex-source.curated { color: var(--accent); font-weight: 500; }
-  .trend-examples {
-    margin-top: 10px;
-    border: 1px solid var(--rule); border-radius: 6px;
-    background: #fafaf6; padding: 6px;
-  }
-  .trend-ex-row {
-    display: grid; grid-template-columns: 90px 130px 60px 1fr;
-    gap: 8px; padding: 6px 8px; font-size: 11.5px;
-    border-bottom: 1px dotted var(--rule); cursor: pointer;
-    font-variant-numeric: tabular-nums;
-    align-items: center;
-  }
-  .trend-ex-row:last-child { border-bottom: none; }
-  .trend-ex-row:hover { background: var(--accent-bg); }
-  .trend-ex-row.selected { background: var(--accent); color: var(--accent-ink); }
-  .trend-ex-row.selected .muted { color: rgba(255,255,255,0.85); }
-  .trend-ex-row .ex-sid { font-weight: 600; }
-  .trend-ex-row .ex-meta { color: var(--muted); font-size: 10.5px; }
-  .trend-ex-row .ex-preview {
-    color: var(--muted);
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  }
-  .trend-ex-row.selected .ex-meta,
-  .trend-ex-row.selected .ex-preview { color: rgba(255,255,255,0.85); }
-  .trend-ex-row .ex-pill {
-    padding: 1px 6px; border-radius: 8px; font-size: 10px;
-    background: white; border: 1px solid var(--rule);
-    text-align: center;
-  }
-  .trend-ex-caption {
-    grid-column: 1 / -1;
-    color: var(--ink); font-size: 11px; line-height: 1.4;
-    padding: 2px 0 0 4px; font-style: italic;
-  }
-  .trend-ex-row.selected .trend-ex-caption { color: rgba(255,255,255,0.92); }
-  .trend-ex-detail {
-    margin-top: 8px; padding: 0;
-  }
-  table.trend-table {
-    border-collapse: collapse; width: 100%; font-size: 12px;
-    font-variant-numeric: tabular-nums;
-  }
-  table.trend-table th, table.trend-table td {
-    padding: 5px 9px; border-bottom: 1px solid var(--rule);
-    text-align: right; white-space: nowrap;
-  }
-  table.trend-table th.dim, table.trend-table td.dim {
-    text-align: left;
-  }
-  table.trend-table th {
-    color: var(--muted); font-weight: 500; background: #fafaf6;
-    border-bottom: 1px solid var(--rule);
-  }
-  table.trend-table td.headline {
-    background: rgba(42, 111, 77, 0.10);
-    font-weight: 600;
-  }
-  table.trend-table td.headline .ci-mid { background: var(--accent); }
-  /* Subtle preset tinting on column headers if a card flags them */
-  table.trend-table th.preset-direct       { background: rgba(231, 240, 236, 0.7); }
-  table.trend-table th.preset-no-distractor{ background: rgba(255, 244, 204, 0.7); }
-  table.trend-table th.preset-unified      { background: rgba(255, 255, 255, 0); }
-  /* SVG line chart for the length-effect card */
-  .trend-chart-wrap { width: 100%; max-width: 900px; }
-  .trend-chart-wrap svg { display: block; width: 100%; height: auto; }
-  .trend-legend {
-    display: flex; gap: 14px; font-size: 12px; padding: 4px 0 0;
-    color: var(--muted);
-  }
-  .trend-legend .swatch {
-    display: inline-block; width: 12px; height: 12px;
-    border-radius: 2px; margin-right: 4px; vertical-align: middle;
-  }
-  .trends-loading {
-    color: var(--muted); padding: 32px 0; text-align: center;
-    font-style: italic; font-size: 13px;
-  }
-
 </style>
 </head>
 <body>
 
-<h1>LCVB viewer — canon_unified</h1>
+<h1>USVB viewer — canon_unified</h1>
 <p class="subtitle">
   85 scenarios &middot; 5 evidence variants &middot; per-row independent (length, depth) sampling &middot; 3 draws &rarr; 6,366 prompts/model.
   Pick a model and a metric; charts re-bin live.
@@ -713,7 +464,6 @@
   <button class="tab-btn" data-tab="scenarios">Scenarios</button>
   <button class="tab-btn" data-tab="results">Results</button>
   <button class="tab-btn" data-tab="prompts">Prompts</button>
-  <button class="tab-btn" data-tab="xl">XL (long-context)</button>
   <button class="tab-btn" data-tab="surface">SR Surface</button>
   <button class="tab-btn" data-tab="frontier">Frontier</button>
 </div>
@@ -779,7 +529,6 @@
       <select id="scen-preset-sel" style="font-size: 11px;">
         <option value="canon_unified">canon_unified (vigilance test)</option>
         <option value="canon_no_distractor">canon_no_distractor (light test)</option>
-        <option value="canon_direct">canon_direct (constraint inline)</option>
       </select>
       <button id="scen-random-btn" class="small-btn" title="Pick a random scenario">🎲 Random</button>
       <span id="scen-list-meta" style="color: var(--muted); margin-left: auto;"></span>
@@ -818,41 +567,6 @@
   </div>
 </div>
 
-<div class="tab-grid-tables tables-only">
-  <div class="tbl-controls">
-    <div class="group">
-      <h3>Metric</h3>
-      <div id="tbl-stat"></div>
-    </div>
-    <div class="group">
-      <h3>Group by</h3>
-      <div id="tbl-groupby"></div>
-    </div>
-    <div class="group">
-      <h3>Filters</h3>
-      <div id="tbl-filters"></div>
-    </div>
-    <button class="copy-pivot-btn" id="tbl-copy-csv">Copy as CSV</button>
-  </div>
-  <div class="tbl-pane">
-    <div class="tbl-meta" id="tbl-meta"></div>
-    <div id="tbl-table"></div>
-  </div>
-</div>
-
-<div class="paper-grid paper-only">
-  <div class="paper-list-wrap">
-    <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">
-      Outputs in <code>analysis/output/</code>. Re-run with
-      <code>python analysis/paper_analyses.py</code>.
-    </div>
-    <div id="paper-list"></div>
-  </div>
-  <div class="paper-detail" id="paper-detail">
-    <div class="scen-empty">Pick an analysis to see its tables, figures, and underlying data.</div>
-  </div>
-</div>
-
 <div class="pmt-grid prompts-only">
   <div class="pmt-list-wrap">
     <div class="pmt-controls">
@@ -876,75 +590,13 @@
   <div class="pmt-detail" id="pmt-detail">
     <div class="scen-empty">Pick a prompt from the left to see its system prompt, user message, and metadata.</div>
   </div>
-</div>
-
-
-<div class="trends-only">
-  <div class="trends-stack" id="trends-stack">
-    <div class="trends-loading">Computing trend cards…</div>
+  <div class="pmt-gens-wrap" id="pmt-gens-wrap">
+    <h4>Generations for this prompt</h4>
+    <div class="pmt-gens-meta" id="pmt-gens-meta">Pick a prompt to see every model's response &amp; judge result.</div>
+    <div id="pmt-gens-list"></div>
   </div>
 </div>
 
-<!-- ════════════════════════════════════════════════════════════════════
-     XL tab — Flash long-context experiment (200K + 500K)
-     ════════════════════════════════════════════════════════════════════ -->
-<div class="xl-only">
-  <div class="panel full" style="background: #fef3c7; border-left: 4px solid #f59e0b;">
-    <p style="margin: 0; color: #92400e; font-size: 13px;">
-      <strong>Exploratory data only.</strong> The XL bands (canon_xl_200k,
-      canon_xl_500k) were a pilot run on a single model
-      (gemini-3-flash-preview). Other models do not have XL data on disk;
-      this tab is preserved as scaffolding for future long-context
-      extensions but is NOT part of the canonical roster results.
-    </p>
-  </div>
-  <div class="panel full">
-    <h2>SR vs prompt length (Flash long-context experiment)</h2>
-    <p class="panel-sub">
-      255 paired prompts at 200K and 500K input tokens vs the canon_unified
-      reference (avg ~13K). Same scenarios × C-bearing variants at both bands.
-    </p>
-    <div class="chart-wrap"><svg id="xl-bar" viewBox="0 0 800 320"></svg></div>
-    <p class="small-meta" id="xl-meta"></p>
-  </div>
-
-  <div class="panel full">
-    <h2>Paired analysis (McNemar)</h2>
-    <p class="panel-sub">
-      Same (scenario, variant) cell at both bands. Off-diagonal counts
-      (200K-only vs 500K-only) measure how often vigilance fails when
-      the haystack grows.
-    </p>
-    <table class="summary-table" id="xl-paired-table"></table>
-  </div>
-
-  <div class="panel full">
-    <h2>Scenarios &amp; responses</h2>
-    <div class="toolbar" style="margin-bottom: 8px;">
-      <label>Band</label>
-      <select id="xl-band-sel">
-        <option value="canon_xl_200k">canon_xl_200k</option>
-        <option value="canon_xl_500k">canon_xl_500k</option>
-      </select>
-      <label>Model</label>
-      <select id="xl-model-sel"></select>
-      <label>Filter</label>
-      <select id="xl-filter-sel">
-        <option value="all">all</option>
-        <option value="failed">vigilance=0 only</option>
-        <option value="passed">vigilance=1 only</option>
-        <option value="errors">errors</option>
-      </select>
-    </div>
-    <table class="summary-table" id="xl-rows-table"
-           style="font-size: 11px; cursor: pointer;"></table>
-  </div>
-
-  <div class="panel full" id="xl-row-detail-wrap" style="display:none;">
-    <h2>Row detail</h2>
-    <div id="xl-row-detail"></div>
-  </div>
-</div>
 
 <!-- ════════════════════════════════════════════════════════════════════
      Surface tab — per-model SR(length, depth) heatmap on canon_unified
@@ -976,7 +628,7 @@
      ════════════════════════════════════════════════════════════════════ -->
 <div class="frontier-only">
   <div class="panel full">
-    <h2>Baseline vs vigilance — SR / CM / MUE per model (grouped by vendor)</h2>
+    <h2>Baseline vs vigilance — SR / CM per model (grouped by vendor)</h2>
     <p class="panel-sub">
       Bars = canon_unified (vigilance test, distractors buried).
       Stars (★) = canon_no_distractor (light test). Models grouped by
@@ -986,9 +638,8 @@
       <span><label style="margin-right:6px;">Show metrics:</label>
         <label><input type="checkbox" id="bvg-met-SR"  checked /> SR</label>
         <label><input type="checkbox" id="bvg-met-CM"          /> CM</label>
-        <label><input type="checkbox" id="bvg-met-MUE"         /> MUE</label>
       </span>
-      <span title="Restricts SR / CM / MUE calculation to the selected variant subset. Affects both the bar chart above and the SR-vs-length / SR-vs-depth curves below.">
+      <span title="Restricts SR / CM calculation to the selected variant subset. Affects both the bar chart above and the SR-vs-length / SR-vs-depth curves below.">
         <label style="margin-right:6px;">Variants:</label>
         <label><input type="checkbox" class="frontier-var" value="C"   checked /> C</label>
         <label><input type="checkbox" class="frontier-var" value="A+C" checked /> A+C</label>
@@ -1004,7 +655,6 @@
           <option value="nodist_SR_desc">No-dist SR ↓</option>
           <option value="gap_SR_desc">Vigilance gap SR (no-dist − unified) ↓</option>
           <option value="unified_CM_desc">Unified CM ↓</option>
-          <option value="unified_MUE_desc">Unified MUE ↓</option>
           <option value="name_asc">Model name A→Z</option>
         </select>
       </span>
@@ -1049,8 +699,9 @@
   </div>
 </div>
 
+
 <script>
-const STATS = ['SR', 'CM', 'MUE', 'FA', 'PM', 'GF'];
+const STATS = ['SR', 'CM'];
 const VARIANT_COLORS = {
   'C':   'var(--series-c)',
   'A+C': 'var(--series-ac)',
@@ -1081,15 +732,6 @@ let state = {
   scen_list_cache: [],   // last loaded scenario list (for the random-jump button)
   scen_rows_ev: '',
   scen_rows_selected: null,
-  // Paper tab
-  paper_index: null,
-  paper_selected_id: null,
-  // Tables tab
-  tbl_dims: null,
-  tbl_stat: 'SR',
-  tbl_groupby: ['model', 'preset'],
-  tbl_filters: {},   // {dim: Set<value>}
-  tbl_last_data: null,
 };
 
 async function fetchModels() {
@@ -1410,7 +1052,7 @@ async function refreshSummary() {
   const d = await r.json();
   meta.textContent = d.n_rows_ok.toLocaleString() + ' non-error rows  ·  run: ' + d.run_id;
 
-  const head = ['Variant', 'n', 'SR', 'GF', 'CM', 'FA', 'PM', 'MUE', 'Abstain'];
+  const head = ['Variant', 'n', 'SR', 'CM', 'Abstain'];
   const tr = document.createElement('tr');
   for (const h of head) {
     const th = document.createElement('th'); th.textContent = h; tr.appendChild(th);
@@ -1419,8 +1061,7 @@ async function refreshSummary() {
   for (const v of d.variants) {
     const row = document.createElement('tr');
     const cells = [v.variant, v.n.toLocaleString(),
-                   fmtPct(v.SR), fmtPct(v.GF), fmtPct(v.CM),
-                   fmtPct(v.FA), fmtPct(v.PM), fmtPct(v.MUE), fmtPct(v.abstain)];
+                   fmtPct(v.SR), fmtPct(v.CM), fmtPct(v.abstain)];
     for (const c of cells) {
       const td = document.createElement('td'); td.textContent = c; row.appendChild(td);
     }
@@ -1429,8 +1070,7 @@ async function refreshSummary() {
   const tro = document.createElement('tr');
   tro.classList.add('overall');
   const oCells = ['Overall', d.n_rows_ok.toLocaleString(),
-                  fmtPct(d.overall.SR), fmtPct(d.overall.GF), fmtPct(d.overall.CM),
-                  fmtPct(d.overall.FA), fmtPct(d.overall.PM), fmtPct(d.overall.MUE), '—'];
+                  fmtPct(d.overall.SR), fmtPct(d.overall.CM), '—'];
   for (const c of oCells) {
     const td = document.createElement('td'); td.textContent = c; tro.appendChild(td);
   }
@@ -1480,12 +1120,6 @@ function setTab(tab) {
   if (tab === 'scenarios') refreshScenariosList();
   if (tab === 'results')   refreshResultsList();
   if (tab === 'prompts')   refreshPromptsList();
-  // Tabs paper/tables/trends were removed in 2026-05-04 cleanup —
-  // their dispatchers are unreachable so we omit them here. The
-  // underlying refresh* functions and Python /api/paper, /api/tables,
-  // /api/trends endpoints are kept on disk as legacy code, callable
-  // only by direct URL access.
-  if (tab === 'xl')        refreshXl();
   if (tab === 'surface')   refreshSurface();
   if (tab === 'frontier')  refreshFrontier();
 }
@@ -1493,362 +1127,6 @@ document.querySelectorAll('.tab-btn').forEach(b => {
   b.addEventListener('click', () => setTab(b.dataset.tab));
 });
 
-// ─────────────────────────────────────────────────────────────
-// Trends tab — curated findings cards
-// ─────────────────────────────────────────────────────────────
-const TREND_SERIES_COLORS = [
-  'var(--series-a)',  // first model
-  'var(--series-bc)', // second
-  'var(--series-c)',  // third
-  'var(--series-ac)',
-  'var(--series-b)',
-];
-
-let _trendsLoaded = false;
-// ─── Examples expand-and-peek handlers (delegated) ────────────────
-document.addEventListener('click', async (e) => {
-  // Toggle the examples list for a trend card
-  const tog = e.target.closest('.trend-ex-toggle');
-  if (tog) {
-    e.stopPropagation();
-    const cardId = tog.dataset.card;
-    const wrap = document.querySelector(
-      '.trend-examples[data-card="' + cardId + '"]');
-    if (!wrap) return;
-    const visible = (wrap.style.display !== 'none');
-    if (visible) {
-      wrap.style.display = 'none';
-      tog.textContent = 'Show 10 examples ▾';
-      return;
-    }
-    // Lazy-load on first expand
-    if (!wrap.dataset.loaded) {
-      wrap.innerHTML = '<div class="scen-empty">loading…</div>';
-      const r = await fetch('/api/trends/examples?card_id=' +
-                            encodeURIComponent(cardId) + '&n=10');
-      if (!r.ok) {
-        wrap.innerHTML = '<div class="scen-empty">Error ' + r.status + '</div>';
-      } else {
-        const d = await r.json();
-        renderTrendExamplesList(wrap, d);
-        const srcEl = document.querySelector(
-          '.trend-ex-source[data-card="' + cardId + '"]');
-        if (srcEl) {
-          srcEl.textContent =
-            (d.source === 'curated'
-              ? 'curated picks · ' + (d.examples?.length || 0) + ' shown'
-              : 'dynamic · top ' + (d.examples?.length || 0) +
-                ' of ' + (d.n_candidates || 0) + ' candidates');
-          srcEl.classList.toggle('curated', d.source === 'curated');
-        }
-      }
-      wrap.dataset.loaded = '1';
-    }
-    wrap.style.display = 'block';
-    tog.textContent = 'Hide examples ▴';
-    return;
-  }
-  // Click on a single example row → load + show full row detail
-  const row = e.target.closest('.trend-ex-row');
-  if (row && row.dataset.scenarioId) {
-    e.stopPropagation();
-    const wrap = row.closest('.trend-examples');
-    // Mark selection
-    wrap.querySelectorAll('.trend-ex-row').forEach(r => r.classList.remove('selected'));
-    row.classList.add('selected');
-    // Build/refresh the detail panel right under the list
-    let detailHost = wrap.querySelector('.trend-ex-detail');
-    if (!detailHost) {
-      detailHost = document.createElement('div');
-      detailHost.className = 'trend-ex-detail';
-      wrap.appendChild(detailHost);
-    }
-    detailHost.innerHTML = '<div class="scen-empty">loading…</div>';
-    const params = new URLSearchParams({
-      model: row.dataset.model,
-      scenario_id: row.dataset.scenarioId,
-      evidence_variant: row.dataset.evidenceVariant,
-      permutation: row.dataset.permutation,
-    });
-    const r = await fetch('/api/results/row?' + params.toString());
-    if (!r.ok) {
-      detailHost.innerHTML = '<div class="scen-empty">Error ' + r.status + '</div>';
-      return;
-    }
-    const d = await r.json();
-    detailHost.innerHTML = renderRowDetailHTML(d, 'trend-' + row.dataset.cardId);
-    wireRowDetailHandlers(d, 'trend-' + row.dataset.cardId);
-  }
-});
-
-function renderTrendExamplesList(wrap, d) {
-  wrap.innerHTML = '';
-  if (!d.examples || !d.examples.length) {
-    wrap.innerHTML = '<div class="scen-empty">' +
-      escapeHTML(d.warn || 'no examples for this trend') + '</div>';
-    return;
-  }
-  for (const ex of d.examples) {
-    const row = document.createElement('div');
-    row.className = 'trend-ex-row';
-    row.dataset.scenarioId      = ex.scenario_id;
-    row.dataset.evidenceVariant = ex.evidence_variant;
-    row.dataset.permutation     = ex.permutation;
-    row.dataset.model           = ex.model;
-    row.dataset.cardId          = d.card_id;
-    const modelShort = (ex.model || '')
-      .replace('claude-haiku-4-5-20251001', 'Haiku 4.5')
-      .replace('claude-sonnet-4-6', 'Sonnet 4.6')
-      .replace('claude-opus-4-7', 'Opus 4.7');
-    const ev = ex.evidence_variant || '?';
-    const recRaw = (ex.recommendation || '').toUpperCase();
-    const rec = recRaw === 'NEITHER' ? 'NEI' : (recRaw || '—');
-    let html = '';
-    html += '<div class="ex-sid">' + escapeHTML(ex.scenario_id) +
-            ' / ' + escapeHTML(ev) + '</div>';
-    html += '<div class="ex-meta">' + escapeHTML(modelShort) +
-            (ex.char_budget
-              ? ' · ' + Math.round(ex.char_budget / 1000) + 'K chars'
-              : '') +
-            (ex.placement_frac != null
-              ? ' · d=' + Number(ex.placement_frac).toFixed(2)
-              : '') +
-            '</div>';
-    html += '<div class="ex-pill">' + escapeHTML(rec) + '</div>';
-    html += '<div class="ex-preview">' +
-            escapeHTML(ex.raw_response_preview || '') + '</div>';
-    if (ex.caption) {
-      html += '<div class="trend-ex-caption">' +
-              escapeHTML(ex.caption) + '</div>';
-    }
-    row.innerHTML = html;
-    wrap.appendChild(row);
-  }
-}
-
-async function refreshTrends() {
-  if (_trendsLoaded) return;
-  const host = document.getElementById('trends-stack');
-  host.innerHTML = '<div class="trends-loading">Computing trend cards…</div>';
-  let r;
-  try {
-    r = await fetch('/api/trends/index');
-  } catch (e) {
-    host.innerHTML = '<div class="trends-loading">Network error: ' + escapeHTML(String(e)) + '</div>';
-    return;
-  }
-  if (!r.ok) {
-    host.innerHTML = '<div class="trends-loading">Error ' + r.status + '</div>';
-    return;
-  }
-  const d = await r.json();
-  host.innerHTML = '';
-  for (const card of d.cards) {
-    host.appendChild(renderTrendCard(card));
-  }
-  _trendsLoaded = true;
-}
-
-function renderTrendCard(card) {
-  const el = document.createElement('div');
-  el.className = 'trend-card';
-  el.dataset.id = card.id;
-
-  let html = '';
-  html += '<h3 class="trend-title">' + escapeHTML(card.title || '') + '</h3>';
-  if (card.finding) {
-    html += '<p class="trend-finding">' + escapeHTML(card.finding) + '</p>';
-  }
-  if (card.kind === 'table' && card.table) {
-    html += '<div class="trend-table-wrap">' + renderTrendTable(card.table) + '</div>';
-  } else if (card.kind === 'linechart' && card.chart) {
-    html += renderTrendLineChart(card.chart, card.id);
-  } else {
-    html += '<div class="scen-empty">no payload</div>';
-  }
-  if (card.method) {
-    html += '<p class="trend-method">' + escapeHTML(card.method) + '</p>';
-  }
-  // Trailing "Examples" expandable section. The button toggles visibility;
-  // the list is fetched lazily on first expand. Only show for cards we
-  // actually have a candidate filter for.
-  const cardsWithExamples = new Set([
-    'knowing_vs_acting', 'vigilance_theater', 'headline_gap',
-    'failure_mode_shift', 'preference_match', 'hardest_domains',
-    'length_attenuation',
-  ]);
-  if (cardsWithExamples.has(card.id)) {
-    html += '<div class="trend-examples-bar">' +
-            '<button class="trend-ex-toggle" data-card="' + card.id + '">' +
-              'Show 10 examples ▾</button>' +
-            '<span class="trend-ex-source" data-card="' + card.id + '"></span>' +
-            '</div>';
-    html += '<div class="trend-examples" data-card="' + card.id + '" style="display:none;"></div>';
-  }
-  el.innerHTML = html;
-  return el;
-}
-
-function renderTrendTable(t) {
-  if (!t.rows || !t.rows.length) {
-    return '<div class="scen-empty">empty</div>';
-  }
-  const header = t.header || [];
-  const pctCols = new Set(t.pct_columns || []);
-  const presetCols = new Set(t.preset_columns || []);
-  const dimCount = t.row_dim_cols || 1;
-
-  // Highlights are pairs of [row-key (the value of the first dim cell),
-  // column-name]. Used to give certain cells the headline accent.
-  const highlightSet = new Set(
-    (t.highlights || []).map(([rk, col]) => rk + '||' + col));
-
-  // Column-class map for preset tinting.
-  const colClass = name => {
-    if (!presetCols.has(name)) return '';
-    if (name === 'canon_direct') return ' preset-direct';
-    if (name === 'canon_no_distractor') return ' preset-no-distractor';
-    if (name === 'canon_unified') return ' preset-unified';
-    return '';
-  };
-
-  let html = '<table class="trend-table"><thead><tr>';
-  for (let i = 0; i < header.length; i++) {
-    const h = header[i];
-    const dimCls = (i < dimCount) ? ' dim' : '';
-    const presetCls = colClass(h);
-    html += '<th class="' + (dimCls + presetCls).trim() + '">' + escapeHTML(h) + '</th>';
-  }
-  html += '</tr></thead><tbody>';
-
-  for (const row of t.rows) {
-    html += '<tr>';
-    const rowKey = (row[0] && typeof row[0] === 'object') ? (row[0].text ?? '') : String(row[0]);
-    for (let i = 0; i < header.length; i++) {
-      const h = header[i];
-      const cell = row[i];
-      const isDim = (i < dimCount);
-      const isHighlight = highlightSet.has(rowKey + '||' + h);
-      const presetCls = colClass(h);
-      const cls = (isDim ? ' dim' : '') + presetCls + (isHighlight ? ' headline' : '');
-      const tdOpen = '<td' + (cls ? ' class="' + cls.trim() + '"' : '') + '>';
-
-      if (cell === null || cell === undefined) {
-        html += tdOpen + '—</td>';
-      } else if (typeof cell === 'object' && 'pct' in cell) {
-        // pct cell with CI bar
-        const pct = cell.pct;
-        if (pct === null || pct === undefined) {
-          html += tdOpen + '—</td>';
-        } else {
-          const lo = (cell.ci_lo == null ? pct : cell.ci_lo);
-          const hi = (cell.ci_hi == null ? pct : cell.ci_hi);
-          const bar = '<span class="ci-bar" title="n=' + (cell.den || 0) +
-            '">' +
-            '<span class="ci-band" style="left:' + lo + '%;width:' + (hi - lo) + '%;"></span>' +
-            '<span class="ci-mid" style="left:' + pct + '%;"></span>' +
-            '</span>' + pct.toFixed(1);
-          html += tdOpen + bar + '</td>';
-        }
-      } else if (typeof cell === 'object' && 'text' in cell) {
-        html += tdOpen + escapeHTML(cell.text) + '</td>';
-      } else if (typeof cell === 'string') {
-        html += tdOpen + escapeHTML(cell) + '</td>';
-      } else if (typeof cell === 'number') {
-        html += tdOpen + (Number.isInteger(cell) ? cell.toLocaleString() : cell.toFixed(2)) + '</td>';
-      } else {
-        html += tdOpen + escapeHTML(String(cell)) + '</td>';
-      }
-    }
-    html += '</tr>';
-  }
-  html += '</tbody></table>';
-  return html;
-}
-
-function renderTrendLineChart(chart, cardId) {
-  const W = 900, H = 320;
-  const m = { l: 56, r: 130, t: 18, b: 42 };
-  const innerW = W - m.l - m.r;
-  const innerH = H - m.t - m.b;
-
-  const xs = (chart.x_log_edges && chart.x_log_edges.length)
-    ? chart.x_log_edges : null;
-  const xMin = xs ? xs[0] : 0;
-  const xMax = xs ? xs[xs.length - 1] : 1;
-  const yMin = 0, yMax = 100;
-  const xToPx = x => m.l + ((x - xMin) / (xMax - xMin)) * innerW;
-  const yToPx = y => m.t + (1 - (y - yMin) / (yMax - yMin)) * innerH;
-
-  let svg = '<div class="trend-chart-wrap"><svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg">';
-
-  // Y gridlines
-  for (let i = 0; i <= 4; i++) {
-    const y = yMin + (yMax - yMin) * i / 4;
-    svg += '<line x1="' + m.l + '" x2="' + (m.l + innerW) + '" y1="' + yToPx(y) + '" y2="' + yToPx(y) +
-           '" stroke="var(--grid)" stroke-width="1"' +
-           (i === 0 ? '' : ' stroke-dasharray="2,2"') + '/>';
-    svg += '<text x="' + (m.l - 6) + '" y="' + (yToPx(y) + 4) +
-           '" text-anchor="end" font-size="11" fill="var(--muted)">' + y.toFixed(0) + '%</text>';
-  }
-  // X axis ticks: show chars at log edges, every other one to avoid clutter
-  if (xs) {
-    for (let i = 0; i < xs.length; i += 2) {
-      const xv = xs[i];
-      const x = xToPx(xv);
-      svg += '<line x1="' + x + '" x2="' + x + '" y1="' + yToPx(yMin) + '" y2="' + (yToPx(yMin) + 4) +
-             '" stroke="var(--ink)"/>';
-      const chars = Math.round(Math.pow(10, xv));
-      const lbl = chars >= 1000 ? (chars / 1000).toFixed(0) + 'k' : String(chars);
-      svg += '<text x="' + x + '" y="' + (yToPx(yMin) + 16) +
-             '" text-anchor="middle" font-size="11" fill="var(--muted)">' + lbl + '</text>';
-    }
-  }
-  svg += '<text x="' + (m.l + innerW / 2) + '" y="' + (H - 6) +
-         '" text-anchor="middle" font-size="12" fill="var(--muted)">' + escapeHTML(chart.x_label || '') + '</text>';
-  // Y label rotated
-  svg += '<text transform="rotate(-90 14 ' + (m.t + innerH / 2) + ') translate(14 ' + (m.t + innerH / 2) +
-         ')" text-anchor="middle" font-size="12" fill="var(--muted)">' + escapeHTML(chart.y_label || '') + '</text>';
-
-  // Series
-  const series = chart.series || [];
-  const legendItems = [];
-  series.forEach((s, idx) => {
-    const color = TREND_SERIES_COLORS[idx % TREND_SERIES_COLORS.length];
-    legendItems.push({ name: s.name, color });
-    let d = ''; let started = false;
-    let lastPt = null;
-    for (const p of s.points) {
-      if (p.y === null || p.y === undefined) { started = false; continue; }
-      const x = xToPx(p.x), y = yToPx(p.y);
-      if (!started) { d += 'M ' + x.toFixed(1) + ' ' + y.toFixed(1); started = true; }
-      else { d += ' L ' + x.toFixed(1) + ' ' + y.toFixed(1); }
-      lastPt = { x, y, p };
-    }
-    svg += '<path d="' + d + '" fill="none" stroke="' + color + '" stroke-width="2"/>';
-    for (const p of s.points) {
-      if (p.y === null || p.y === undefined) continue;
-      const cx = xToPx(p.x), cy = yToPx(p.y);
-      svg += '<circle cx="' + cx + '" cy="' + cy + '" r="3" fill="' + color + '">';
-      svg += '<title>' + escapeHTML(s.name) + ': ' + p.y.toFixed(1) + '%  (n=' + p.n + ')</title>';
-      svg += '</circle>';
-    }
-    // End-of-line label
-    if (lastPt) {
-      svg += '<text x="' + (lastPt.x + 6) + '" y="' + (lastPt.y + 4) +
-             '" font-size="11" font-weight="600" fill="' + color + '">' + escapeHTML(s.name) + '</text>';
-    }
-  });
-  svg += '</svg></div>';
-
-  let legend = '<div class="trend-legend">';
-  for (const it of legendItems) {
-    legend += '<span><span class="swatch" style="background:' + it.color + '"></span>' +
-              escapeHTML(it.name) + '</span>';
-  }
-  legend += '</div>';
-  return svg + legend;
-}
 
 document.body.setAttribute('data-tab', 'charts');
 
@@ -1915,11 +1193,7 @@ async function refreshScenariosList() {
     {field: 'domain_prefix', label: 'Domain', defDir: 'asc', sortField: null},  // not sortable
     {field: 'n',           label: 'n',      defDir: 'desc'},
     {field: 'SR',          label: 'SR',     defDir: 'asc'},
-    {field: 'GF',          label: 'GF',     defDir: 'asc'},
     {field: 'CM',          label: 'CM',     defDir: 'asc'},
-    {field: 'FA',          label: 'FA',     defDir: 'asc'},
-    {field: 'PM',          label: 'PM',     defDir: 'asc'},
-    {field: 'MUE',         label: 'MUE',    defDir: 'asc'},
     {field: 'abstain',     label: 'Abst',   defDir: 'asc'},
   ];
 
@@ -1969,8 +1243,7 @@ async function refreshScenariosList() {
       '<span class="sid">' + escapeHTML(s.scenario_id) + '</span>',
       '<span class="domain">' + escapeHTML(s.domain_prefix || '—') + '</span>',
       String(s.n || 0),
-      fmt(s.SR), fmt(s.GF), fmt(s.CM),
-      fmt(s.FA), fmt(s.PM), fmt(s.MUE), fmt(s.abstain),
+      fmt(s.SR), fmt(s.CM), fmt(s.abstain),
     ];
     for (const c of cells) {
       const td = document.createElement('td'); td.innerHTML = c; tr.appendChild(td);
@@ -1988,8 +1261,8 @@ async function refreshScenariosList() {
 
   // Footer — macro-average across the loaded scenarios. Each metric's
   // mean is computed only over scenarios with a defined value (null
-  // means the metric isn't applicable for that scenario, e.g. SR / CM
-  // are null for no-constraint-only filters; FA is null for C-only).
+  // means the metric isn't applicable for that scenario, e.g. SR is
+  // null for no-constraint-only filters).
   const tfoot = document.createElement('tfoot');
   const trF = document.createElement('tr');
   trF.className = 'scen-avg-row';
@@ -2010,11 +1283,7 @@ async function refreshScenariosList() {
     '<span class="muted">(' + (d.scenarios || []).length + ' scen)</span>',
     String(totalN),
     fmtAvg(macroMean('SR')),
-    fmtAvg(macroMean('GF')),
     fmtAvg(macroMean('CM')),
-    fmtAvg(macroMean('FA')),
-    fmtAvg(macroMean('PM')),
-    fmtAvg(macroMean('MUE')),
     fmtAvg(macroMean('abstain')),
   ];
   for (const c of avgCells) {
@@ -2057,10 +1326,8 @@ async function refreshScenarioDetail() {
   function tableRow(v) {
     function f(x) { return x === null || x === undefined ? '—' : x.toFixed(1) + '%'; }
     return '<tr><td>' + v.variant + '</td><td>' + v.n + '</td>' +
-           '<td>' + f(v.SR) + '</td><td>' + f(v.GF) + '</td>' +
-           '<td>' + f(v.CM) + '</td><td>' + f(v.FA) + '</td>' +
-           '<td>' + f(v.PM) + '</td>' +
-           '<td>' + f(v.MUE) + '</td><td>' + f(v.abstain) + '</td></tr>';
+           '<td>' + f(v.SR) + '</td><td>' + f(v.CM) + '</td>' +
+           '<td>' + f(v.abstain) + '</td></tr>';
   }
   let html = '';
   html += '<h3>' + escapeHTML(d.scenario_id) + ' &middot; ' + escapeHTML(d.domain) + '</h3>';
@@ -2087,7 +1354,7 @@ async function refreshScenarioDetail() {
   if (d.per_variant && d.per_variant.length) {
     html += '<div class="field"><div class="field-label">Per-variant results (current run)</div>' +
             '<table class="summary-table"><tr><th>Variant</th><th>n</th>' +
-            '<th>SR</th><th>GF</th><th>CM</th><th>FA</th><th>PM</th><th>MUE</th><th>Abstain</th></tr>';
+            '<th>SR</th><th>CM</th><th>Abstain</th></tr>';
     for (const v of d.per_variant) html += tableRow(v);
     html += '</table></div>';
   }
@@ -2161,13 +1428,13 @@ async function refreshScenarioRows() {
     let badge = '';
     if (row.is_error) badge = '<span class="badge err">ERR</span>';
     else if (row.parse_error === '1') badge = '<span class="badge peq1">PE</span>';
-    else if (row.vigilance === '1') badge = '<span class="badge vig">VIG</span>';
     el.innerHTML =
       '<div>' + escapeHTML(row.evidence_variant || '?') + '</div>' +
       '<div style="font-size:10px;color:var(--muted);">' + escapeHTML(row.permutation || '') + '</div>' +
+      '<div>' + rowJudgePillsHTML(row) + '</div>' +
       '<div class="preview">' + escapeHTML(row.raw_response_preview || '') + '</div>' +
       '<div>' + badge + '</div>';
-    el.style.gridTemplateColumns = '38px 110px 1fr 32px';
+    el.style.gridTemplateColumns = '38px 110px 165px 1fr 32px';
     el.addEventListener('click', () => {
       state.scen_rows_selected = {
         evidence_variant: row.evidence_variant,
@@ -2240,6 +1507,34 @@ function escapeHTML(s) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+
+// Render the inline judge pills (REC / CM / SR) shown in each row
+// of the scenario + results row pickers. Returns an HTML string.
+// `row` is a trimmed row from /api/results/rows — it has
+// recommendation, constraint_mentioned, vigilance_refuse_only,
+// sufficiently_modified fields.
+function rowJudgePillsHTML(row) {
+  if (row.is_error) return '<span class="judge-pills"></span>';
+  const out = [];
+  const rec = (row.recommendation || '').toUpperCase();
+  if (rec) {
+    let label = rec;
+    let cls = 'rec';
+    if (rec === 'NEITHER_REFUSE') { label = 'REF'; cls = 'rec refuse'; }
+    else if (rec === 'NEITHER_HEDGE') { label = 'HDG'; cls = 'rec hedge'; }
+    out.push('<span class="jp ' + cls + '">' + label + '</span>');
+  }
+  const cm = (row.constraint_mentioned || '').toUpperCase();
+  if (cm === 'YES') out.push('<span class="jp cm-yes" title="constraint mentioned">CM</span>');
+  else if (cm === 'NO') out.push('<span class="jp cm-no" title="no constraint mention">CM</span>');
+  const sr = row.vigilance_refuse_only;
+  if (sr === '1' || sr === 1 || sr === true) {
+    out.push('<span class="jp sr-1" title="SR pass">SR</span>');
+  } else if (sr === '0' || sr === 0 || sr === false) {
+    out.push('<span class="jp sr-0" title="SR fail">SR</span>');
+  }
+  return '<span class="judge-pills">' + out.join('') + '</span>';
 }
 
 // Parse a system_prompt back into preamble + alternating chat turns.
@@ -2350,10 +1645,10 @@ async function refreshResultsList() {
     let badge = '';
     if (row.is_error) badge = '<span class="badge err">ERR</span>';
     else if (row.parse_error === '1') badge = '<span class="badge peq1">PE</span>';
-    else if (row.vigilance === '1') badge = '<span class="badge vig">VIG</span>';
     el.innerHTML =
       '<div>' + escapeHTML(row.scenario_id) + '</div>' +
       '<div>' + escapeHTML(row.evidence_variant || '?') + '</div>' +
+      '<div>' + rowJudgePillsHTML(row) + '</div>' +
       '<div class="preview">' + escapeHTML(row.raw_response_preview || '') + '</div>' +
       '<div>' + badge + '</div>';
     el.addEventListener('click', () => {
@@ -2427,26 +1722,24 @@ async function refreshResultsDetail() {
 // Scenario tab's row browser.
 function renderRowDetailHTML(d, prefix) {
   const isErr = (d.raw_response || '').startsWith('ERROR');
-  const flagPill = d.flagged === 'YES'
-    ? '<span class="pill flag-yes">flagged: yes</span>'
-    : d.flagged === 'NO'
-      ? '<span class="pill flag-no">flagged: no</span>'
-      : '';
   const cmPill = d.constraint_mentioned === 'YES'
     ? '<span class="pill cm-yes">constraint mentioned</span>'
     : d.constraint_mentioned === 'NO'
       ? '<span class="pill cm-no">no constraint</span>'
       : '';
-  const muePill = d.mentions_user_evidence === 'YES'
-    ? '<span class="pill mue-yes">mentions user evidence</span>'
-    : d.mentions_user_evidence === 'NO'
-      ? '<span class="pill mue-no">no user evidence</span>'
+  const smPill = d.sufficiently_modified === 'YES'
+    ? '<span class="pill cm-yes">sufficiently modified</span>'
+    : d.sufficiently_modified === 'NO'
+      ? '<span class="pill cm-no">not modified</span>'
       : '';
-  const vigPill = d.vigilance === '1' ? '<span class="pill vig-1">SR</span>' :
-                  d.vigilance === '0' ? '<span class="pill">no SR</span>' : '';
-  const faPill = d.false_alarm === '1' ? '<span class="pill fa-1">FA</span>' :
-                 d.false_alarm === '0' ? '<span class="pill">no FA</span>' : '';
-  const abPill = d.abstained === '1' ? '<span class="pill absta-1">abstained</span>' : '';
+  const vigVal = d.vigilance_refuse_only ?? d.vigilance;
+  const vigPill = vigVal === '1' ? '<span class="pill vig-1">SR</span>' :
+                  vigVal === '0' ? '<span class="pill">no SR</span>' : '';
+  const abPill = d.abstained === '1'
+    ? '<span class="pill absta-1">abstained' +
+      (d.abstain_type ? ' · ' + escapeHTML(d.abstain_type) : '') +
+      '</span>'
+    : '';
   const pePill = d.parse_error === '1' ? '<span class="pill flag-yes">parse_error</span>' : '';
   const errPill = isErr ? '<span class="pill error">subject error</span>' : '';
 
@@ -2459,7 +1752,7 @@ function renderRowDetailHTML(d, prefix) {
   html += '<div class="badge-row">';
   html += '<span class="pill expected">expected: ' + escapeHTML(d.expected_answer || '?') + '</span>';
   if (d.recommendation) html += '<span class="pill rec">recommended: ' + escapeHTML(d.recommendation) + '</span>';
-  html += flagPill + cmPill + muePill + vigPill + faPill + abPill + pePill + errPill;
+  html += cmPill + smPill + vigPill + abPill + pePill + errPill;
   html += '</div>';
 
   // KV table — only the numeric / less-categorical fields
@@ -2476,8 +1769,8 @@ function renderRowDetailHTML(d, prefix) {
               ? Number(d.placement_frac).toFixed(3)
               : '—') +
           '</div>';
-  html += '<div class="k">Heavily modified</div><div class="v">' +
-            (d.heavily_modified ?? '—') + '</div>';
+  html += '<div class="k">Sufficiently modified</div><div class="v">' +
+            (d.sufficiently_modified ?? '—') + '</div>';
   html += '</div>';
 
   // Raw model response
@@ -2486,12 +1779,24 @@ function renderRowDetailHTML(d, prefix) {
           escapeHTML((d.raw_response || '').replace(/\\n/g, '\n')) +
           '</pre>';
 
-  // Judge explanation
-  if (d.explanation) {
-    html += '<div class="section-header">Judge explanation</div>';
+  // Judge reasoning preamble (v2 schema) + the 3 structured fields are
+  // also already pilled above. The judge's REASONING text lives in
+  // `reasoning`; some older rows have it in `explanation` — handle both.
+  const judgeText = d.reasoning || d.explanation;
+  if (judgeText) {
+    html += '<div class="section-header">Judge reasoning (verbatim)</div>';
     html += '<div class="judge-card2">' +
-            escapeHTML((d.explanation || '').replace(/\\n/g, '\n')) +
+            escapeHTML(String(judgeText).replace(/\\n/g, '\n')) +
             '</div>';
+    html += '<div class="kv" style="margin-top:6px;">' +
+            '<div class="k">Judge structured fields</div>' +
+            '<div class="v"><code>RECOMMENDATION: ' +
+              escapeHTML(d.recommendation || '—') +
+              '</code> &nbsp;<code>CONSTRAINT_MENTIONED: ' +
+              escapeHTML(d.constraint_mentioned || '—') +
+              '</code> &nbsp;<code>SUFFICIENTLY_MODIFIED: ' +
+              escapeHTML(d.sufficiently_modified || '—') +
+              '</code></div></div>';
   }
 
   // Prompt used (collapsible)
@@ -2641,6 +1946,7 @@ async function refreshPromptsList() {
       state.pmt_selected = p.name;
       refreshPromptsList();
       refreshPromptDetail();
+      refreshPromptGenerations();
     });
     list.appendChild(el);
   }
@@ -2732,6 +2038,100 @@ async function refreshPromptDetail() {
   });
 }
 
+// Render the right-rail panel that lists every model's response to the
+// currently-selected prompt, with judge pills + a short response
+// preview. Each generation row is clickable and expands inline to show
+// the verbatim judge output + full raw response.
+function _pmtGenPillsHTML(g) {
+  if (g.is_error) return '<span class="pmt-gen-pills"><span class="jp sr-0">ERR</span></span>';
+  const out = [];
+  const rec = (g.recommendation || '').toUpperCase();
+  if (rec) {
+    let label = rec;
+    let cls = 'rec';
+    if (rec === 'NEITHER_REFUSE') { label = 'REF'; cls = 'rec refuse'; }
+    else if (rec === 'NEITHER_HEDGE') { label = 'HDG'; cls = 'rec hedge'; }
+    out.push('<span class="jp ' + cls + '">' + label + '</span>');
+  }
+  const cm = (g.constraint_mentioned || '').toUpperCase();
+  if (cm === 'YES') out.push('<span class="jp cm-yes" title="constraint mentioned">CM</span>');
+  else if (cm === 'NO') out.push('<span class="jp cm-no" title="no constraint mention">CM</span>');
+  const sr = g.vigilance_refuse_only;
+  if (sr === '1') out.push('<span class="jp sr-1" title="SR pass">SR</span>');
+  else if (sr === '0') out.push('<span class="jp sr-0" title="SR fail">SR</span>');
+  return '<span class="pmt-gen-pills">' + out.join('') + '</span>';
+}
+
+async function refreshPromptGenerations() {
+  const listEl = document.getElementById('pmt-gens-list');
+  const metaEl = document.getElementById('pmt-gens-meta');
+  if (!state.pmt_selected) {
+    listEl.innerHTML = '';
+    metaEl.textContent = 'Pick a prompt to see every model\'s response & judge result.';
+    return;
+  }
+  metaEl.textContent = 'loading…';
+  listEl.innerHTML = '';
+  const r = await fetch('/api/prompt/generations?name=' + encodeURIComponent(state.pmt_selected));
+  if (!r.ok) {
+    metaEl.textContent = 'Error ' + r.status;
+    return;
+  }
+  const d = await r.json();
+  metaEl.textContent = d.n_models + ' generation(s) for ' +
+    d.scenario_id + ' · ' + d.evidence_variant + ' · ' + d.permutation;
+  for (const g of d.generations) {
+    const row = document.createElement('div');
+    let cls = 'pmt-gen-row';
+    if (g.is_error) cls += ' err';
+    else if (g.parse_error === '1') cls += ' pe';
+    row.className = cls;
+    row.innerHTML =
+      '<div class="pmt-gen-model">' +
+        '<span>' + escapeHTML(g.model_display) + '</span>' +
+        _pmtGenPillsHTML(g) +
+      '</div>' +
+      '<div class="pmt-gen-excerpt">' +
+        escapeHTML((g.raw_response_preview || '').replace(/\\n/g, ' ')) +
+      '</div>';
+    row.addEventListener('click', () => {
+      // Toggle a detail block under this row
+      const existing = row.querySelector('.pmt-gen-detail');
+      if (existing) { existing.remove(); return; }
+      const det = document.createElement('div');
+      det.className = 'pmt-gen-detail';
+      det.style.cssText = 'margin-top:6px;border-top:1px dotted var(--rule);padding-top:6px;';
+      const rawClean = (g.raw_response || '').replace(/\\n/g, '\n');
+      const reasoningClean = (g.reasoning || g.explanation || '').replace(/\\n/g, '\n');
+      const structured =
+        'RECOMMENDATION: ' + (g.recommendation || '—') +
+        '\nCONSTRAINT_MENTIONED: ' + (g.constraint_mentioned || '—') +
+        '\nSUFFICIENTLY_MODIFIED: ' + (g.sufficiently_modified || '—');
+      det.innerHTML =
+        '<div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:3px;">Model response</div>' +
+        '<pre style="white-space:pre-wrap;font:11px/1.4 ui-monospace,Menlo,monospace;background:var(--user);padding:6px 8px;border-radius:4px;max-height:240px;overflow:auto;margin:0 0 6px 0;">' +
+          escapeHTML(rawClean) + '</pre>' +
+        (reasoningClean ?
+          '<div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:3px;">Judge reasoning (verbatim)</div>' +
+          '<pre style="white-space:pre-wrap;font:11px/1.4 ui-monospace,Menlo,monospace;background:#f7f3e9;border:1px solid #e5c23a;padding:6px 8px;border-radius:4px;max-height:240px;overflow:auto;margin:0 0 6px 0;">' +
+            escapeHTML(reasoningClean) + '</pre>'
+          : '') +
+        '<div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:3px;">Judge structured fields</div>' +
+        '<pre style="white-space:pre-wrap;font:11px/1.4 ui-monospace,Menlo,monospace;background:#fafaf6;border:1px solid var(--rule);padding:6px 8px;border-radius:4px;margin:0;">' +
+          escapeHTML(structured) + '</pre>';
+      // Prevent the toggle click from collapsing immediately when
+      // clicking inside the detail panel.
+      det.addEventListener('click', e => e.stopPropagation());
+      row.appendChild(det);
+    });
+    listEl.appendChild(row);
+  }
+  if (d.generations.length === 0) {
+    listEl.innerHTML = '<div class="scen-empty" style="font-size:11px;">No matching rows in any model\'s canon_unified run for ' +
+      escapeHTML(d.permutation) + '.</div>';
+  }
+}
+
 document.getElementById('pmt-sid').addEventListener('input', e => {
   state.pmt_sid = e.target.value.trim().toUpperCase();
   state.pmt_offset = 0; refreshPromptsList();
@@ -2774,509 +2174,9 @@ if (_pmtRandomBtn) _pmtRandomBtn.addEventListener('click', async () => {
   await refreshPromptDetail();
 });
 
-// ─────────────────────────────────────────────────────────────
-// Paper tab
-// ─────────────────────────────────────────────────────────────
-async function refreshPaperList() {
-  const r = await fetch('/api/paper/index');
-  const list = document.getElementById('paper-list');
-  if (!r.ok) { list.innerHTML = '<div class="scen-empty">Error ' + r.status + '</div>'; return; }
-  state.paper_index = await r.json();
-  list.innerHTML = '';
-  for (const it of state.paper_index.items) {
-    const el = document.createElement('div');
-    const missing = !it.files || it.files.length === 0;
-    el.className = 'paper-item' + (missing ? ' missing' : '') +
-                   (state.paper_selected_id === it.id ? ' selected' : '');
-    const fileSummary = missing
-      ? '<span class="muted">no output yet — re-run paper_analyses.py</span>'
-      : (it.files.length + ' file' + (it.files.length === 1 ? '' : 's'));
-    el.innerHTML =
-      '<div><span class="id">' + escapeHTML(it.id) + '</span>' +
-      '<span class="title">' + escapeHTML(it.title) + '</span></div>' +
-      '<div class="question">' + escapeHTML(it.question) + '</div>' +
-      '<div class="files muted">' + fileSummary + '</div>';
-    el.addEventListener('click', () => {
-      if (missing) return;
-      state.paper_selected_id = it.id;
-      refreshPaperList();
-      refreshPaperDetail();
-    });
-    list.appendChild(el);
-  }
-  if (state.paper_selected_id) refreshPaperDetail();
-}
-
-async function refreshPaperDetail() {
-  const detail = document.getElementById('paper-detail');
-  const it = (state.paper_index?.items || []).find(x => x.id === state.paper_selected_id);
-  if (!it) {
-    detail.innerHTML = '<div class="scen-empty">Pick an analysis.</div>';
-    return;
-  }
-  let html = '<h3 style="margin:0 0 4px;">' + escapeHTML(it.id) + ' — ' +
-             escapeHTML(it.title) + '</h3>';
-  html += '<div style="color:var(--muted);font-size:12px;margin-bottom:12px;">' +
-          escapeHTML(it.question) + '</div>';
-
-  // Render figures first (if any)
-  for (const f of it.files) {
-    if (f.kind === 'figure') {
-      html += '<div class="paper-tools">' +
-              '<span style="font-weight:500;">' + escapeHTML(f.name) + '</span>' +
-              '<span class="muted">' + (f.size / 1024).toFixed(0) + ' KB</span>' +
-              '</div>';
-      html += '<img class="paper-figure-img" src="/api/paper/figure?rel=' +
-              encodeURIComponent(f.rel) + '" alt="' + escapeHTML(f.name) + '" />';
-    }
-  }
-  // Render tables (CSV/TSV)
-  for (const f of it.files) {
-    if (f.kind === 'table') {
-      html += '<div class="paper-tools">' +
-              '<span style="font-weight:500;">' + escapeHTML(f.name) + '</span>' +
-              '<span class="muted">' + (f.size / 1024).toFixed(1) + ' KB</span>' +
-              '<button data-rel="' + encodeURIComponent(f.rel) +
-                '" class="copy-btn" data-copy="csv">Copy as CSV</button>' +
-              '</div>';
-      html += '<div id="table-' + cssId(f.name) + '" class="paper-table-host"></div>';
-    }
-  }
-  // Render LaTeX (if any)
-  for (const f of it.files) {
-    if (f.kind === 'latex') {
-      html += '<div class="paper-tools">' +
-              '<span style="font-weight:500;">' + escapeHTML(f.name) + '</span>' +
-              '<button class="latex-btn" data-rel="' + encodeURIComponent(f.rel) + '">Show LaTeX</button>' +
-              '</div>';
-      html += '<div id="latex-' + cssId(f.name) + '"></div>';
-    }
-  }
-  detail.innerHTML = html;
-
-  // Async-load tables
-  for (const f of it.files) {
-    if (f.kind === 'table') {
-      const host = document.getElementById('table-' + cssId(f.name));
-      const r = await fetch('/api/paper/table?rel=' + encodeURIComponent(f.rel));
-      if (!r.ok) {
-        host.innerHTML = '<div class="scen-empty">Error ' + r.status + '</div>';
-        continue;
-      }
-      const t = await r.json();
-      host.innerHTML = renderTableHTML(t);
-    }
-  }
-  // Wire LaTeX toggles
-  for (const f of it.files) {
-    if (f.kind === 'latex') {
-      const host = document.getElementById('latex-' + cssId(f.name));
-      const btn = document.querySelector('.latex-btn[data-rel="' + encodeURIComponent(f.rel) + '"]');
-      btn.addEventListener('click', async () => {
-        if (host.innerHTML) { host.innerHTML = ''; btn.textContent = 'Show LaTeX'; return; }
-        const r = await fetch('/api/paper/latex?rel=' + encodeURIComponent(f.rel));
-        if (r.ok) {
-          const d = await r.json();
-          host.innerHTML = '<pre class="latex-block">' + escapeHTML(d.tex) + '</pre>';
-          btn.textContent = 'Hide LaTeX';
-        }
-      });
-    }
-  }
-  // Wire copy buttons
-  for (const btn of document.querySelectorAll('.copy-btn')) {
-    btn.addEventListener('click', async () => {
-      const r = await fetch('/api/paper/table?rel=' + btn.dataset.rel);
-      if (!r.ok) return;
-      const t = await r.json();
-      const text = [t.header.join(','), ...t.rows.map(r => r.join(','))].join('\n');
-      try { await navigator.clipboard.writeText(text); btn.textContent = 'copied!'; }
-      catch (e) { btn.textContent = 'copy failed'; }
-      setTimeout(() => { btn.textContent = 'Copy as CSV'; }, 1500);
-    });
-  }
-}
-
-function renderTableHTML(t) {
-  if (!t.rows || !t.rows.length) {
-    return '<div class="scen-empty" style="padding:8px;">empty table</div>';
-  }
-  let html = '<div style="max-height:380px;overflow:auto;border:1px solid var(--rule);border-radius:4px;margin-bottom:14px;">';
-  html += '<table class="paper-table"><thead><tr>';
-  for (const h of t.header) html += '<th>' + escapeHTML(h) + '</th>';
-  html += '</tr></thead><tbody>';
-  for (const r of t.rows) {
-    html += '<tr>';
-    for (const c of r) html += '<td>' + escapeHTML(c) + '</td>';
-    html += '</tr>';
-  }
-  html += '</tbody></table></div>';
-  return html;
-}
-
-function cssId(s) { return s.replace(/[^A-Za-z0-9]/g, '_'); }
-
-// ─────────────────────────────────────────────────────────────
-// Tables (cross-model pivot) tab
-// ─────────────────────────────────────────────────────────────
-async function refreshTables() {
-  if (!state.tbl_dims) {
-    const r = await fetch('/api/tables/dims');
-    if (!r.ok) {
-      document.getElementById('tbl-meta').textContent = 'Error ' + r.status;
-      return;
-    }
-    state.tbl_dims = await r.json();
-    buildTableControls();
-  }
-  await refreshPivotTable();
-}
-
-function buildTableControls() {
-  // Stat radio
-  const statHost = document.getElementById('tbl-stat');
-  statHost.innerHTML = '';
-  for (const s of state.tbl_dims.stats) {
-    const id = 'tbl-stat-' + s;
-    const lab = document.createElement('label');
-    lab.innerHTML = '<input type="radio" name="tbl-stat" id="' + id + '" value="' + s + '"' +
-                    (state.tbl_stat === s ? ' checked' : '') + '> ' + s;
-    statHost.appendChild(lab);
-  }
-  statHost.addEventListener('change', e => {
-    if (e.target.name === 'tbl-stat') {
-      state.tbl_stat = e.target.value;
-      refreshPivotTable();
-    }
-  });
-
-  // Group-by checkboxes (with order arrows)
-  const gbHost = document.getElementById('tbl-groupby');
-  gbHost.innerHTML = '';
-  for (const dim of state.tbl_dims.dimensions) {
-    const checked = state.tbl_groupby.includes(dim.code);
-    const order = checked ? state.tbl_groupby.indexOf(dim.code) + 1 : '';
-    const lab = document.createElement('label');
-    lab.innerHTML = '<input type="checkbox" data-dim="' + dim.code + '"' +
-                    (checked ? ' checked' : '') + '> ' + dim.code +
-                    '<span class="order-up-down">' +
-                      (order ? '· #' + order : '') + '</span>';
-    lab.title = dim.label;
-    gbHost.appendChild(lab);
-  }
-  gbHost.addEventListener('change', e => {
-    if (e.target.tagName === 'INPUT') {
-      const dim = e.target.dataset.dim;
-      if (e.target.checked) {
-        if (!state.tbl_groupby.includes(dim)) state.tbl_groupby.push(dim);
-      } else {
-        state.tbl_groupby = state.tbl_groupby.filter(d => d !== dim);
-      }
-      buildTableControls();  // re-render to update order labels
-      refreshPivotTable();
-    }
-  });
-
-  // Filters
-  const filterHost = document.getElementById('tbl-filters');
-  filterHost.innerHTML = '';
-  for (const dim of state.tbl_dims.dimensions) {
-    if (!dim.values || dim.values.length === 0) continue;
-    if (dim.values.length > 50) continue;  // skip scenario_id explosion
-    const block = document.createElement('div');
-    block.className = 'filter-group';
-    let h = '<div style="font-weight: 500; margin-bottom: 2px;">' + dim.code + '</div>';
-    h += '<div class="vals">';
-    const sel = state.tbl_filters[dim.code] || new Set();
-    for (const v of dim.values) {
-      const id = 'tbl-filter-' + cssId(dim.code) + '-' + cssId(String(v));
-      h += '<label><input type="checkbox" id="' + id + '"' +
-           ' data-dim="' + dim.code + '" data-val="' + escapeHTML(String(v)) + '"' +
-           (sel.size === 0 || sel.has(String(v)) ? ' checked' : '') +
-           '> ' + escapeHTML(String(v)) + '</label>';
-    }
-    h += '</div>';
-    block.innerHTML = h;
-    filterHost.appendChild(block);
-  }
-  filterHost.addEventListener('change', e => {
-    if (e.target.tagName === 'INPUT' && e.target.dataset.dim) {
-      const dim = e.target.dataset.dim;
-      // Collect all checked values for this dim
-      const checked = filterHost.querySelectorAll(
-          'input[data-dim="' + dim + '"]:checked');
-      const all = filterHost.querySelectorAll(
-          'input[data-dim="' + dim + '"]');
-      const sel = new Set([...checked].map(el => el.dataset.val));
-      if (sel.size === all.length || sel.size === 0) {
-        // "all checked" or "none checked" → clear filter
-        delete state.tbl_filters[dim];
-      } else {
-        state.tbl_filters[dim] = sel;
-      }
-      refreshPivotTable();
-    }
-  });
-}
-
-async function refreshPivotTable() {
-  if (!state.tbl_groupby.length) {
-    document.getElementById('tbl-table').innerHTML =
-      '<div class="pivot-empty">Pick at least one Group-by dimension.</div>';
-    return;
-  }
-  const params = new URLSearchParams();
-  params.set('stat', state.tbl_stat);
-  params.set('groupby', state.tbl_groupby.join(','));
-  for (const [dim, vals] of Object.entries(state.tbl_filters)) {
-    if (vals && vals.size) params.set('filter_' + dim, [...vals].join(','));
-  }
-  const r = await fetch('/api/tables/pivot?' + params.toString());
-  if (!r.ok) {
-    document.getElementById('tbl-meta').textContent = 'Error ' + r.status;
-    return;
-  }
-  const d = await r.json();
-  state.tbl_last_data = d;
-  document.getElementById('tbl-meta').textContent =
-    'Stat ' + d.stat + '  ·  group by ' + d.groupby.join(', ') +
-    '  ·  rows ' + d.rows.length +
-    '  ·  ' + d.n_rows_kept_post_filter.toLocaleString() +
-    ' / ' + d.n_total_rows_in_data.toLocaleString() + ' raw rows kept';
-  renderPivot(d);
-}
-
-function renderPivot(d) {
-  const host = document.getElementById('tbl-table');
-  if (!d.rows.length) {
-    host.innerHTML = '<div class="pivot-empty">No rows match the current filters.</div>';
-    return;
-  }
-  let html = '<div style="max-height:680px;overflow:auto;">';
-  html += '<table class="pivot-table"><thead><tr>';
-  for (const h of d.header) {
-    const cls = (h === 'pct' || h === 'ci_lo' || h === 'ci_hi'
-                 || h === 'n' || h === 'num' || h === 'den')
-                ? '' : 'dim';
-    html += '<th class="' + cls + '">' + escapeHTML(h) + '</th>';
-  }
-  html += '</tr></thead><tbody>';
-  const dimCount = d.groupby.length;
-  for (const row of d.rows) {
-    let cls = '';
-    // Optional preset-coloring
-    if (d.groupby.includes('preset')) {
-      const idx = d.groupby.indexOf('preset');
-      const pv = String(row[idx]);
-      if (pv === 'canon_direct') cls = ' class="pivot-row-preset-direct"';
-      else if (pv === 'canon_no_distractor') cls = ' class="pivot-row-preset-no-distractor"';
-      else if (pv === 'canon_unified') cls = ' class="pivot-row-preset-unified"';
-    }
-    html += '<tr' + cls + '>';
-    for (let i = 0; i < d.header.length; i++) {
-      const v = row[i];
-      const colName = d.header[i];
-      if (i < dimCount) {
-        html += '<td class="dim">' + escapeHTML(String(v)) + '</td>';
-      } else if (colName === 'pct') {
-        // Render as a CI bar + numeric text
-        const pct = (v == null) ? null : Number(v);
-        const lo = row[i + 1], hi = row[i + 2];
-        if (pct == null) {
-          html += '<td>—</td>';
-        } else {
-          const bandLo = lo == null ? pct : lo;
-          const bandHi = hi == null ? pct : hi;
-          const bar = '<span class="ci-bar">' +
-                      '<span class="ci-band" style="left:' + bandLo + '%;width:' + (bandHi - bandLo) + '%;"></span>' +
-                      '<span class="ci-mid" style="left:' + pct + '%;"></span>' +
-                      '</span>' + pct.toFixed(1);
-          html += '<td>' + bar + '</td>';
-        }
-      } else {
-        html += '<td>' + (v == null ? '—' : (typeof v === 'number'
-                                              ? (Number.isInteger(v) ? v.toLocaleString() : v.toFixed(2))
-                                              : escapeHTML(String(v)))) + '</td>';
-      }
-    }
-    html += '</tr>';
-  }
-  html += '</tbody></table></div>';
-  host.innerHTML = html;
-}
-
-document.getElementById('tbl-copy-csv').addEventListener('click', async () => {
-  const d = state.tbl_last_data;
-  if (!d) return;
-  const text = [d.header.join(','), ...d.rows.map(r => r.map(c => c == null ? '' : c).join(','))].join('\n');
-  try { await navigator.clipboard.writeText(text); }
-  catch (e) {}
-});
 
 buildStatButtons();
 fetchModels();
-
-// ─────────────────────────────────────────────────────────────
-// XL tab — Flash long-context experiment
-// ─────────────────────────────────────────────────────────────
-async function refreshXl() {
-  const r = await fetch('/api/xl/summary'); const d = await r.json();
-  // Bar chart: per-model SR at unified ref / 200k / 500k
-  const svg = document.getElementById('xl-bar');
-  svg.innerHTML = '';
-  const W = 800, H = 320, PAD = {l: 60, r: 20, t: 20, b: 60};
-  const innerW = W - PAD.l - PAD.r, innerH = H - PAD.t - PAD.b;
-  // Y axis: 0..100
-  const ns = 'http://www.w3.org/2000/svg';
-  for (let y = 0; y <= 100; y += 20) {
-    const yp = PAD.t + innerH - innerH * y / 100;
-    const line = document.createElementNS(ns, 'line');
-    line.setAttribute('x1', PAD.l); line.setAttribute('x2', W - PAD.r);
-    line.setAttribute('y1', yp); line.setAttribute('y2', yp);
-    line.setAttribute('stroke', 'var(--rule)');
-    svg.appendChild(line);
-    const lbl = document.createElementNS(ns, 'text');
-    lbl.setAttribute('x', PAD.l - 6); lbl.setAttribute('y', yp + 4);
-    lbl.setAttribute('text-anchor', 'end'); lbl.setAttribute('font-size', '11');
-    lbl.setAttribute('fill', 'var(--muted)');
-    lbl.textContent = y; svg.appendChild(lbl);
-  }
-  const models = d.models || [];
-  const groupCount = models.length || 1;
-  const groupW = innerW / groupCount;
-  const colors = ['#888', '#4a90e2', '#d0021b'];
-  const labels = ['canon_unified', 'canon_xl_200k', 'canon_xl_500k'];
-  models.forEach((m, gi) => {
-    const groupX = PAD.l + gi * groupW;
-    const refSR = (d.reference[m] || {}).SR;
-    const b200 = (d.bands.canon_xl_200k.find(x => x.model === m) || {}).SR;
-    const b500 = (d.bands.canon_xl_500k.find(x => x.model === m) || {}).SR;
-    const vals = [refSR, b200, b500];
-    const barW = groupW / 4;
-    vals.forEach((v, i) => {
-      if (v == null) return;
-      const x = groupX + (i + 0.5) * barW;
-      const yT = PAD.t + innerH - innerH * v / 100;
-      const rect = document.createElementNS(ns, 'rect');
-      rect.setAttribute('x', x); rect.setAttribute('width', barW * 0.9);
-      rect.setAttribute('y', yT); rect.setAttribute('height', PAD.t + innerH - yT);
-      rect.setAttribute('fill', colors[i]);
-      svg.appendChild(rect);
-      const t = document.createElementNS(ns, 'text');
-      t.setAttribute('x', x + barW * 0.45); t.setAttribute('y', yT - 4);
-      t.setAttribute('text-anchor', 'middle'); t.setAttribute('font-size', '10');
-      t.setAttribute('fill', 'var(--text)');
-      t.textContent = v.toFixed(1);
-      svg.appendChild(t);
-    });
-    const lbl = document.createElementNS(ns, 'text');
-    lbl.setAttribute('x', groupX + groupW / 2); lbl.setAttribute('y', H - 30);
-    lbl.setAttribute('text-anchor', 'middle'); lbl.setAttribute('font-size', '11');
-    lbl.setAttribute('fill', 'var(--text)');
-    lbl.textContent = m.replace('-preview', '').replace('-20251001', '');
-    svg.appendChild(lbl);
-  });
-  // Legend
-  labels.forEach((lab, i) => {
-    const lx = PAD.l + i * 220, ly = H - 10;
-    const sw = document.createElementNS(ns, 'rect');
-    sw.setAttribute('x', lx); sw.setAttribute('y', ly - 9);
-    sw.setAttribute('width', 12); sw.setAttribute('height', 10);
-    sw.setAttribute('fill', colors[i]); svg.appendChild(sw);
-    const lt = document.createElementNS(ns, 'text');
-    lt.setAttribute('x', lx + 16); lt.setAttribute('y', ly);
-    lt.setAttribute('font-size', '11'); lt.setAttribute('fill', 'var(--text)');
-    lt.textContent = lab; svg.appendChild(lt);
-  });
-  document.getElementById('xl-meta').textContent =
-    `${models.length} model(s) with XL data. Bar values are SR % on C-bearing variants.`;
-
-  // Paired McNemar table
-  const pt = document.getElementById('xl-paired-table');
-  pt.innerHTML = '<tr><th>Model</th><th>n paired</th>' +
-    '<th>both vigilant</th><th>200K only</th><th>500K only</th>' +
-    '<th>neither</th><th>200K÷500K failure ratio</th></tr>';
-  d.paired.forEach(p => {
-    const ratio = (p.only500 ? p.only200 / p.only500 : null);
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${p.model}</td><td>${p.n}</td>` +
-      `<td>${p.both} (${(100*p.both/p.n).toFixed(1)}%)</td>` +
-      `<td>${p.only200} (${(100*p.only200/p.n).toFixed(1)}%)</td>` +
-      `<td>${p.only500} (${(100*p.only500/p.n).toFixed(1)}%)</td>` +
-      `<td>${p.neither} (${(100*p.neither/p.n).toFixed(1)}%)</td>` +
-      `<td>${ratio == null ? '—' : ratio.toFixed(2) + '×'}</td>`;
-    pt.appendChild(tr);
-  });
-
-  // Populate model selector + load row table
-  const sel = document.getElementById('xl-model-sel');
-  sel.innerHTML = '';
-  models.forEach(m => {
-    const o = document.createElement('option'); o.value = m; o.textContent = m;
-    sel.appendChild(o);
-  });
-  if (models.length) refreshXlRows();
-}
-async function refreshXlRows() {
-  const band = document.getElementById('xl-band-sel').value;
-  const model = document.getElementById('xl-model-sel').value;
-  const filter = document.getElementById('xl-filter-sel').value;
-  if (!model) return;
-  const r = await fetch(`/api/xl/rows?preset=${band}&model=${encodeURIComponent(model)}`);
-  const d = await r.json();
-  let items = d.items || [];
-  if (filter === 'failed') items = items.filter(it => ["C","A+C","B+C"].includes(it.evidence_variant) && !it.vigilance && !it.is_error);
-  else if (filter === 'passed') items = items.filter(it => ["C","A+C","B+C"].includes(it.evidence_variant) && it.vigilance);
-  else if (filter === 'errors') items = items.filter(it => it.is_error);
-  const t = document.getElementById('xl-rows-table');
-  t.innerHTML = '<tr><th>Scenario</th><th>Variant</th><th>Expected</th><th>Rec</th>' +
-    '<th>Vig</th><th>CM</th><th>MUE</th><th>FA</th><th>Excerpt</th></tr>';
-  items.forEach(it => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${it.scenario_id}</td><td>${it.evidence_variant}</td>` +
-      `<td>${it.expected||''}</td><td>${it.recommendation||''}</td>` +
-      `<td style="color:${it.vigilance?'green':'#888'}">${it.vigilance?'✓':'·'}</td>` +
-      `<td>${it.constraint_mentioned||''}</td>` +
-      `<td>${it.mentions_user_evidence||''}</td>` +
-      `<td>${it.false_alarm?'⚠':''}</td>` +
-      `<td style="font-size:10px;max-width:400px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${(it.excerpt||'').replace(/</g,'&lt;')}</td>`;
-    tr.addEventListener('click', () => loadXlRowDetail(it.idx));
-    t.appendChild(tr);
-  });
-  document.getElementById('xl-row-detail-wrap').style.display = 'none';
-}
-async function loadXlRowDetail(idx) {
-  const band = document.getElementById('xl-band-sel').value;
-  const model = document.getElementById('xl-model-sel').value;
-  const r = await fetch(`/api/xl/row?preset=${band}&model=${encodeURIComponent(model)}&idx=${idx}`);
-  const d = await r.json();
-  const wrap = document.getElementById('xl-row-detail-wrap');
-  const detail = document.getElementById('xl-row-detail');
-  wrap.style.display = '';
-  const sys = d.prompt && d.prompt.system_prompt || '(prompt not found)';
-  const user = d.prompt && d.prompt.user_message || '';
-  detail.innerHTML = `
-    <p><b>${d.scenario_id} / ${d.evidence_variant} / ${d.permutation}</b> &mdash;
-       expected=<code>${d.expected||''}</code>
-       recommended=<code>${d.recommendation||''}</code>
-       vigilance=<code>${d.vigilance?'1':'0'}</code>
-       CM=<code>${d.constraint_mentioned}</code>
-       MUE=<code>${d.mentions_user_evidence}</code>
-       FA=<code>${d.false_alarm?'1':'0'}</code>
-    </p>
-    <details open><summary>Model raw response</summary>
-      <pre style="white-space:pre-wrap;background:var(--accent-bg);padding:8px;font-size:11px;border-radius:4px;">${(d.raw_response||'').replace(/</g,'&lt;')}</pre>
-    </details>
-    <details><summary>Judge explanation</summary>
-      <pre style="white-space:pre-wrap;background:var(--accent-bg);padding:8px;font-size:11px;border-radius:4px;">${(d.judge_explanation||'').replace(/</g,'&lt;')}</pre>
-    </details>
-    <details><summary>System prompt (conversation history with constraint buried in)</summary>
-      <pre style="white-space:pre-wrap;background:var(--panel);padding:8px;font-size:10px;max-height:400px;overflow:auto;border-radius:4px;border:1px solid var(--rule);">${(sys+'\n\nUSER MESSAGE:\n'+user).replace(/</g,'&lt;').slice(0, 30000)}${sys.length+user.length>30000?'\n…(truncated for display)':''}</pre>
-    </details>
-  `;
-}
-['xl-band-sel','xl-model-sel','xl-filter-sel'].forEach(id =>
-  document.getElementById(id).addEventListener('change', refreshXlRows));
 
 // ─────────────────────────────────────────────────────────────
 // SR Surface tab — per-model length × depth heatmap
@@ -3669,18 +2569,18 @@ async function drawBaselineVsGap() {
     : 'none';
 
   // Read selected metrics from the checkboxes
-  const METRICS = ['SR', 'CM', 'MUE'].filter(m =>
+  const METRICS = ['SR', 'CM'].filter(m =>
     document.getElementById('bvg-met-' + m).checked);
   if (METRICS.length === 0) {
-    _drawEmptyChart(svg, 'No metric selected — pick at least one of SR / CM / MUE.');
+    _drawEmptyChart(svg, 'No metric selected — pick at least one of SR / CM.');
     document.getElementById('frontier-bvg-meta').textContent =
-      'No metric selected — pick at least one of SR / CM / MUE.';
+      'No metric selected — pick at least one of SR / CM.';
     return;
   }
 
   // Empty-data safeguard: every model in the list has null for every
   // selected metric on both presets. Common cause: variant subset like
-  // {A} or {B} where SR / MUE are formally null.
+  // {A} or {B} where SR is formally null.
   const haveAnyValue = (d.models || []).some(m =>
     METRICS.some(metric =>
       (m.unified && m.unified[metric] != null) ||
@@ -3690,7 +2590,7 @@ async function drawBaselineVsGap() {
       `No ${METRICS.join(' / ')} values for variants: ${variantsLabel}`);
     document.getElementById('frontier-bvg-meta').textContent =
       `0 model × metric cells have a defined value under variants ${variantsLabel}. ` +
-      `(SR and MUE are null on no-constraint variants A and B; CM is defined everywhere.)`;
+      `(SR is null on no-constraint variants A and B; CM is defined everywhere.)`;
     return;
   }
 
@@ -3704,7 +2604,6 @@ async function drawBaselineVsGap() {
   const METRIC_COLORS = {
     SR:  '#3b82f6',
     CM:  '#a855f7',
-    MUE: '#10b981',
   };
 
   // Apply sort
@@ -3725,8 +2624,6 @@ async function drawBaselineVsGap() {
     models.sort((a,b) => gap(b) - gap(a));
   } else if (sortMode === 'unified_CM_desc') {
     models.sort((a,b) => (b.unified.CM ?? -1) - (a.unified.CM ?? -1));
-  } else if (sortMode === 'unified_MUE_desc') {
-    models.sort((a,b) => (b.unified.MUE ?? -1) - (a.unified.MUE ?? -1));
   } else if (sortMode === 'name_asc') {
     models.sort((a,b) => (a.model_display || a.model).localeCompare(b.model_display || b.model));
   }
@@ -3984,7 +2881,7 @@ async function drawBaselineVsGap() {
 }
 
 // Wire the metric checkboxes + sort dropdown to redraw on change
-['SR', 'CM', 'MUE'].forEach(m => {
+['SR', 'CM'].forEach(m => {
   const el = document.getElementById('bvg-met-' + m);
   if (el) el.addEventListener('change', drawBaselineVsGap);
 });
@@ -4008,6 +2905,8 @@ document.querySelectorAll('.frontier-var').forEach(cb => {
     refreshFrontier();
   });
 });
+
+// ═══════════════════════════════════════════════════════════════════
 
 </script>
 

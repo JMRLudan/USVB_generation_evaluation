@@ -20,9 +20,9 @@ if [[ "${1:-}" == "--loop" ]]; then
     done
 fi
 
-PRESETS=(canon_direct:2122 canon_no_distractor:2122 canon_unified:6366)
+PRESETS=(canon_no_distractor:2122 canon_unified:6366)
 
-printf "LCVB run status — %s\n" "$(date '+%Y-%m-%d %H:%M:%S')"
+printf "USVB run status — %s\n" "$(date '+%Y-%m-%d %H:%M:%S')"
 printf "%-2s %-32s %-22s %12s   %s\n" "" "MODEL_DIR" "PRESET" "ROWS / TOTAL" "PROGRESS"
 printf -- "----------------------------------------------------------------------------------------------------\n"
 

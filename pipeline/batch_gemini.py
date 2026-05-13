@@ -2,7 +2,7 @@
 batch_gemini.py — Google Gemini Batch API adapter.
 ====================================================
 
-Wraps Google's Gemini Batch API for LCVB canon runs. 50% discount on
+Wraps Google's Gemini Batch API for USVB canon runs. 50% discount on
 the real-time price; 24-hour completion window.
 
 Two viable backend paths exist for Gemini batch jobs:
@@ -296,7 +296,7 @@ class GeminiBatchAdapter:
             uploaded = self._client.files.upload(
                 file=tmp_path,
                 config={
-                    "display_name": display_name or "lcvb_batch_input.jsonl",
+                    "display_name": display_name or "usvb_batch_input.jsonl",
                     # The .jsonl extension isn't recognized by mimetypes
                     # on Linux, so pass it explicitly. Google's batch
                     # endpoint expects "application/jsonl".
@@ -313,7 +313,7 @@ class GeminiBatchAdapter:
             model=model,
             src=uploaded.name,
             config={
-                "display_name": display_name or "lcvb_batch",
+                "display_name": display_name or "usvb_batch",
             },
         )
         return batch_job.name

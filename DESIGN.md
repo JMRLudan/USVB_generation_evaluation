@@ -1,4 +1,4 @@
-# LCVB — Design Notes for the Paper
+# USVB — Design Notes for the Paper
 
 This is framing material for the methods section. The code is what it is;
 this document is about how to *describe* it.
@@ -23,7 +23,7 @@ The configuration space is a 7-dimensional hypercube:
 | `lengths_named` / `lengths_list` | `dict[str,int]` / `list[int]` | The actual budgets when `length_mode="fixed"`. |
 | `length_mode` | `{fixed, log_uniform_stratified}` | `fixed` consumes `lengths_named`/`lengths_list` as discrete budgets. `log_uniform_stratified` ignores those and samples one char budget per cell on a log-uniform scale over `length_range`, stratified within scenario. |
 | `length_range` | `tuple(int, int)` | Min/max char budgets when `length_mode="log_uniform_stratified"`. |
-| `include_constraint_inline` | `bool` | Whether the constraint description is folded into the user message (ceiling-test condition) vs inserted into history. |
+| `include_constraint_inline` | `bool` | Whether the constraint description is folded into the user message vs inserted into history. Always `False` for the two reported conditions. |
 | `c_only` | `bool` | Whether to restrict to `C`-bearing variants. The full canon since 2026-05-01 sets this `False` so `A` and `B` no-C variants are enumerated as well. |
 | `merge_gap_days` | `int ≥ 0` | Inter-chat timestamp gap when `n_distractors_per_prompt ≥ 2`. |
 
@@ -32,15 +32,14 @@ is a pure function: same config → same prompts, byte-for-byte.
 
 ### The conditions in the paper are points in this space
 
-The three canonical conditions map cleanly onto specific config points:
+The two canonical conditions map cleanly onto specific config points:
 
 | Condition | `n_d_draws` | `n_d_per_prompt` | `n_p` | `n_l` | `placement_mode` | `length_mode` | `length_range` | `include_constraint_inline` |
 |---|---|---|---|---|---|---|---|---|
-| **Direct / ceiling** (`canon_direct`) | 0 | 1 | 0 | 0 | — | — | — | `True` |
 | **No-distractor / primary** (`canon_no_distractor`) | 0 | 1 | 0 | 0 | — | — | — | `False` |
 | **Unified with-distractor** (`canon_unified`) | 3 | 3 | 1 | 1 | `uniform_stratified` | `log_uniform_stratified` | `(3000, 250000)` | `False` |
 
-All three set `c_only = False` so each enumerates the full 5-variant
+Both set `c_only = False` so each enumerates the full 5-variant
 scenario set (`C, A+C, B+C, A, B`) — 2 122 distinct
 `(scenario, variant, perm)` tuples on the 85-scenario corpus.
 `canon_unified` resamples each tuple three times (`n_distractor_draws=3`),
@@ -49,7 +48,7 @@ producing 6 366 prompts; each row gets an independent
 log-uniformly on `[3 000, 250 000]` chars and placement uniformly on
 `[0, 1]`. `merge_gap_days = 1` everywhere.
 
-Total per-model prompt count: 2 122 + 2 122 + 6 366 = **10 610**.
+Total per-model prompt count: 2 122 + 6 366 = **8 488**.
 
 ### Why a single unified with-distractor preset
 
@@ -163,7 +162,7 @@ Inserted evidence seeds and stitched distractor chats are wrapped with
 short framing phrases so the assembled prompt reads as one coherent
 multi-day dialogue rather than three pasted-together topics. This
 applies only to the canon_unified path (`legacy_fluency=False`, the
-default); `canon_direct` and `canon_no_distractor` are unaffected.
+default); `canon_no_distractor` is unaffected.
 
 | Where | What |
 |---|---|
@@ -207,11 +206,12 @@ haystack size.
   that appear organically inside distractors show up in rendered
   prompts, regardless of what `DEFAULT_ACKS` is set to. Evidence-ack
   text is the only dialogue the mixer itself authors.
-- **The scoring semantics.** Rules for SR, General Flag, False Alarm,
-  Choice Correct live in `SCORING.md` and `pipeline/eval_pipeline.py`'s
-  judge prompt; they are orthogonal to prompt construction.
-- **The judge.** Held fixed at gemini-3-flash-preview per project convention.
-  A different judge is a different benchmark.
+- **The scoring semantics.** Rules for SR and Choice Correct live in
+  `SCORING.md` and `pipeline/eval_pipeline.py:JUDGE_SYSTEM`;
+  they are orthogonal to prompt construction.
+- **The judge.** Held fixed at gemini-3-flash-preview per project convention,
+  with the v2 prompt (3-field schema + REASONING preamble + 4-valued
+  RECOMMENDATION). A different judge is a different benchmark.
 
 ---
 
@@ -228,7 +228,8 @@ haystack size.
 > and artifacts needed to reproduce the reported prompt bytes are
 > released at [repo URL].
 
-The canonical config points are in `viewer/app.py`'s `RENDERERS`
-registry under the `canon` flag, and as direct CLI invocations in the
-`render_*.py` wrappers. A table in the appendix listing the exact
-`mix()` argument values per reported row is probably worth including.
+The canonical config points are direct CLI invocations in the
+`pipeline/renderers/render_no_distractor.py` and
+`pipeline/renderers/render_unified.py` wrappers. A table in the appendix
+listing the exact `mix()` argument values per reported row is probably
+worth including.
