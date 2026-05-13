@@ -47,12 +47,11 @@ distribution](#data-distribution) below.
 git clone https://github.com/JMRLudan/USVB_generation_evaluation.git
 cd USVB_generation_evaluation
 
-# Download the canonical data + prompts (~244MB, split into 3 parts).
+# Download the canonical data + prompts (~363MB, split into 5 parts).
 # Reassemble the tarball, then extract.
 BASE=https://github.com/JMRLudan/USVB_generation_evaluation/releases/download/v2
-for i in 00 01 02; do curl -OL "$BASE/usvb-data-v2.tar.gz.part$i"; done
-cat usvb-data-v2.tar.gz.part00 usvb-data-v2.tar.gz.part01 \
-    usvb-data-v2.tar.gz.part02 > usvb-data-v2.tar.gz
+for i in 00 01 02 03 04; do curl -OL "$BASE/usvb-data-v2.tar.gz.part$i"; done
+cat usvb-data-v2.tar.gz.part* > usvb-data-v2.tar.gz
 tar -xzvf usvb-data-v2.tar.gz
 
 # Spin up the viewer
@@ -155,9 +154,9 @@ and Gemini 3.1 Flash-Lite) across the roster.
 ## Data distribution
 
 The canonical results, prompts, and integrity manifest are published as
-a tarball (`usvb-data-v2.tar.gz`, ~244 MB, split across three release
-assets) attached to GitHub Releases. It extracts in-place over the
-cloned repo:
+a tarball (`usvb-data-v2.tar.gz`, ~363 MB, split across five release
+assets — part00…part04) attached to GitHub Releases. It extracts
+in-place over the cloned repo:
 
 ```
 usvb-data-v2/
