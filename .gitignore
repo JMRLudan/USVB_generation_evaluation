@@ -14,6 +14,12 @@ generated/
 *vb-data-*.tar.gz
 *vb-data-*.tar.gz.part*
 
+# Tarball-build INTEGRITY manifests — generated at repo root just before
+# being added to a release tarball. Never tracked.
+INTEGRITY.json
+ABLATION_INTEGRITY.json
+*_INTEGRITY.json
+
 # Run outputs — results + checkpoints, distributed via the data tarball
 data/runs/
 pipeline/api_logs/
@@ -28,6 +34,14 @@ archive_*/
 
 # Per-run batch-API manifests (provider batch_ids — ephemeral)
 batch_manifests/
+analysis_*/batch_manifests/
+
+# Sibling-analysis bulk data — judged TSVs + smoke runs in any analysis_*/
+# directory (analysis_ablation, analysis_judge_swap, ...). Same convention
+# as data/runs/: scripts + small derived CSV/TXT artifacts are tracked,
+# raw TSVs are distributed via the release tarball (usvb-data-ablation-*.tar.gz).
+analysis_*/results/
+analysis_*/results_smoke/
 
 # Per-run wall logs (machine-specific timestamps + paths)
 logs/

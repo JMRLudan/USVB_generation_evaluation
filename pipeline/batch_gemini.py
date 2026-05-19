@@ -322,26 +322,41 @@ class GeminiBatchAdapter:
     def poll(self, batch_id: str) -> BatchStatus:
         """Snapshot status. Gemini batch states:
 
-          BATCH_STATE_PENDING    → in_progress
-          BATCH_STATE_RUNNING    → in_progress
-          BATCH_STATE_SUCCEEDED  → ended
-          BATCH_STATE_FAILED     → errored
-          BATCH_STATE_CANCELLED  → cancelled
-          BATCH_STATE_EXPIRED    → ended
+          JOB_STATE_PENDING    → in_progress
+          JOB_STATE_RUNNING    → in_progress
+          JOB_STATE_SUCCEEDED  → ended
+          JOB_STATE_FAILED     → errored
+          JOB_STATE_CANCELLED  → cancelled
+          JOB_STATE_EXPIRED    → ended
+
+        Note: Google API uses JOB_STATE_* prefix. The previous
+        BATCH_STATE_* mapping never matched, silently falling
+        through to "in_progress" — meaning succeeded batches always
+        appeared still-running. Fixed 2026-05-19.
         """
         if batch_id.startswith("DRYRUN-"):
             n = int(batch_id.split("-", 1)[1])
             return BatchStatus(state="ended", n_total=n, n_succeeded=n)
         self._ensure_client()
         b = self._client.batches.get(name=batch_id)
-        api_state = str(getattr(b, "state", "") or "")
+        # `state` may be a JobState enum, "JobState.JOB_STATE_SUCCEEDED",
+        # "JobState.SUCCEEDED", or "JOB_STATE_SUCCEEDED" depending on SDK
+        # version. Normalize by taking everything after the final "." and
+        # ensuring the JOB_STATE_ prefix.
+        raw = getattr(b, "state", "") or ""
+        api_state = str(raw)
+        if "." in api_state:
+            api_state = api_state.rsplit(".", 1)[-1]  # JobState.X → X
+        if not api_state.startswith("JOB_STATE_"):
+            api_state = "JOB_STATE_" + api_state
+        api_state = api_state.replace("BATCH_STATE_", "JOB_STATE_")
         status_map = {
-            "BATCH_STATE_PENDING": "in_progress",
-            "BATCH_STATE_RUNNING": "in_progress",
-            "BATCH_STATE_SUCCEEDED": "ended",
-            "BATCH_STATE_FAILED": "errored",
-            "BATCH_STATE_CANCELLED": "cancelled",
-            "BATCH_STATE_EXPIRED": "ended",
+            "JOB_STATE_PENDING": "in_progress",
+            "JOB_STATE_RUNNING": "in_progress",
+            "JOB_STATE_SUCCEEDED": "ended",
+            "JOB_STATE_FAILED": "errored",
+            "JOB_STATE_CANCELLED": "cancelled",
+            "JOB_STATE_EXPIRED": "ended",
         }
         # Gemini doesn't always expose per-row counts during run.
         # We surface what's available and leave the rest at 0.

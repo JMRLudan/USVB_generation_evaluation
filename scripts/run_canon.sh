@@ -67,8 +67,8 @@ if [[ -z "$MODEL" ]]; then
 fi
 
 case "$REASONING" in
-    default|off|low) ;;
-    *) echo "✗ --reasoning must be one of: default, off, low"; exit 1 ;;
+    default|off|low|medium|high) ;;
+    *) echo "✗ --reasoning must be one of: default, off, low, medium, high"; exit 1 ;;
 esac
 
 LOG_DIR="logs"

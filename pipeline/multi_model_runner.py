@@ -47,11 +47,15 @@ from openrouter_client import OpenRouterClient
 # Do NOT hard-code keys here. Set OPENROUTER_API_KEY and GEMINI_API_KEY
 # (and ANTHROPIC_API_KEY for Anthropic subject models) in your .env.
 
-# Canonical judge — gemini-3-flash-preview, routed via Google Gemini.
-# Subject runs route through OpenRouter or Anthropic; the judge is its
-# own provider call. See INFERENCE.md for parameters.
-JUDGE_MODEL = "gemini-3-flash-preview"
-JUDGE_PROVIDER = "gemini"
+# Canonical judge — gemini-3-flash-preview routed via OpenRouter so we can
+# reuse OpenRouterClient.complete_async (which only handles openrouter +
+# anthropic providers; the native "gemini" path was never implemented after
+# 66dc4ac dropped batch_judge_gemini.py). The OR markup on Gemini is ~5% and
+# the absolute judge cost is small, so this is the pragmatic fix.
+# Batch judging (analysis_ablation/run_judge_batch.py) still uses Google's
+# native Gemini Batch API for the 50% batch discount.
+JUDGE_MODEL = "google/gemini-3-flash-preview"
+JUDGE_PROVIDER = "openrouter"
 MAX_CONCURRENT = 30  # conservative for OpenRouter
 TEMPERATURE = 1.0
 
@@ -206,6 +210,10 @@ async def openrouter_chat(
     }
     if reasoning_mode == "off":
         model_params["reasoning"] = {"enabled": False}
+    elif reasoning_mode == "high":
+        model_params["reasoning"] = {"effort": "high"}
+    elif reasoning_mode == "medium":
+        model_params["reasoning"] = {"effort": "medium"}
     elif reasoning_mode == "low" or (reasoning_mode == "default" and model in THINKING_MODELS):
         # Legacy path: earlier OpenAI/Gemini runs used effort=low for
         # THINKING_MODELS. Kept default-on for those slugs to preserve

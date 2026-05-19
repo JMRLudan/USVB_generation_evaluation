@@ -355,7 +355,7 @@ def main():
     )
     ap.add_argument(
         "--reasoning",
-        choices=["default", "off", "low"],
+        choices=["default", "off", "low", "medium", "high"],
         default="default",
         help=(
             "Reasoning/thinking mode for OpenRouter-routed models. "

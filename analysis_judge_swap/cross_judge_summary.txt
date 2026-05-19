@@ -1,0 +1,100 @@
+USVB cross-judge robustness — Gemini Flash vs Haiku 4.5
+==============================================================================
+
+=== ND (N models = 19) ===
+model                                            Gem SR    Hai SR    Δ G-H
+gemini-3.1-pro-preview                            93.1%     92.2%    +1.0
+gemini-3-flash-preview                            92.3%     83.1%    +9.2
+gpt-5.5                                           89.0%     85.3%    +3.7
+claude-opus-4-7                                   86.9%     85.3%    +1.6
+deepseek_deepseek-v4-pro                          86.9%     80.6%    +6.3
+gemini-3.1-flash-lite-preview                     86.7%     81.4%    +5.3
+claude-sonnet-4-6-thinking                        84.3%     81.2%    +3.1
+gpt-5                                             84.1%     81.8%    +2.4
+qwen_qwen3.5-397b-a17b-reasoning-off              83.5%     79.2%    +4.3
+gpt-5-mini                                        82.9%     82.0%    +1.0
+qwen_qwen3.5-27b-reasoning-off                    81.0%     79.6%    +1.4
+qwen_qwen3.5-9b-reasoning-on                      76.3%     68.8%    +7.5
+claude-sonnet-4-6                                 74.3%     70.2%    +4.1
+qwen_qwen3.5-122b-a10b-reasoning-off              73.7%     71.2%    +2.5
+qwen_qwen3.5-35b-a3b-reasoning-off                67.1%     64.3%    +2.8
+claude-haiku-4-5-20251001                         55.3%     56.9%    -1.6
+qwen_qwen3.5-9b-reasoning-off                     51.0%     50.2%    +0.8
+openai_gpt-oss-120b                               43.1%     47.2%    -4.1
+openai_gpt-oss-20b                                25.9%     23.5%    +2.4
+  Pearson r = 0.988   Spearman ρ = 0.940
+  Δ (G−H): mean +2.82 pp, median +2.55 pp, stdev 3.05 pp
+
+=== WD (N models = 18) ===
+model                                            Gem SR    Hai SR    Δ G-H
+gemini-3.1-pro-preview                            90.5%     89.5%    +0.9
+gemini-3-flash-preview                            85.3%     78.8%    +6.5
+gpt-5.5                                           84.2%     78.9%    +5.4
+gpt-5                                             78.2%     77.8%    +0.5
+claude-opus-4-7                                   77.2%     73.9%    +3.4
+claude-sonnet-4-6-thinking                        66.5%     68.5%    -2.1
+gemini-3.1-flash-lite-preview                     56.7%     48.5%    +8.2
+claude-sonnet-4-6                                 52.2%     51.6%    +0.7
+deepseek_deepseek-v4-pro                          51.3%     49.1%    +2.2
+qwen_qwen3.5-27b-reasoning-off                    50.5%     47.3%    +3.2
+qwen_qwen3.5-397b-a17b-reasoning-off              50.2%     44.8%    +5.4
+gpt-5-mini                                        48.4%     49.2%    -0.8
+qwen_qwen3.5-9b-reasoning-on                      44.4%     38.3%    +6.1
+qwen_qwen3.5-122b-a10b-reasoning-off              42.2%     38.1%    +4.1
+qwen_qwen3.5-35b-a3b-reasoning-off                32.3%     30.0%    +2.3
+claude-haiku-4-5-20251001                         22.9%     23.1%    -0.2
+openai_gpt-oss-120b                               10.3%      9.1%    +1.3
+openai_gpt-oss-20b                                 2.7%      2.2%    +0.5
+  Pearson r = 0.994   Spearman ρ = 0.969
+  Δ (G−H): mean +2.64 pp, median +2.27 pp, stdev 2.84 pp
+
+=== WRD (N models = 18) ===
+model                                            Gem SR    Hai SR    Δ G-H
+gemini-3.1-pro-preview                            87.2%     82.6%    +4.7
+gemini-3-flash-preview                            82.3%     69.8%   +12.5
+gpt-5.5                                           80.2%     72.2%    +8.1
+gpt-5                                             76.2%     72.2%    +4.0
+claude-opus-4-7                                   71.0%     65.9%    +5.1
+claude-sonnet-4-6-thinking                        66.5%     62.6%    +4.0
+gpt-5-mini                                        53.2%     54.8%    -1.6
+deepseek_deepseek-v4-pro                          52.6%     48.9%    +3.8
+claude-sonnet-4-6                                 52.1%     45.2%    +6.9
+gemini-3.1-flash-lite-preview                     48.7%     38.2%   +10.4
+qwen_qwen3.5-397b-a17b-reasoning-off              46.7%     39.6%    +7.0
+qwen_qwen3.5-27b-reasoning-off                    46.2%     43.1%    +3.2
+qwen_qwen3.5-9b-reasoning-on                      44.2%     38.4%    +5.7
+qwen_qwen3.5-122b-a10b-reasoning-off              41.4%     35.0%    +6.5
+qwen_qwen3.5-35b-a3b-reasoning-off                32.7%     29.7%    +3.1
+claude-haiku-4-5-20251001                         19.1%     18.3%    +0.8
+openai_gpt-oss-120b                               11.7%     12.8%    -1.1
+openai_gpt-oss-20b                                 2.1%      2.2%    -0.1
+  Pearson r = 0.990   Spearman ρ = 0.979
+  Δ (G−H): mean +4.60 pp, median +4.34 pp, stdev 3.75 pp
+
+==============================================================================
+Vigilance gap (SR(ND) − SR(WD)) under each judge
+==============================================================================
+model                                           Gem ND   Gem WD   Gem VG   Hai ND   Hai WD   Hai VG      ΔVG
+claude-haiku-4-5-20251001                        55.3%    22.9%   +32.3     56.9%    23.1%   +33.8    -1.4
+claude-opus-4-7                                  86.9%    77.2%    +9.7     85.3%    73.9%   +11.4    -1.8
+claude-sonnet-4-6                                74.3%    52.2%   +22.1     70.2%    51.6%   +18.6    +3.5
+claude-sonnet-4-6-thinking                       84.3%    66.5%   +17.8     81.2%    68.5%   +12.6    +5.2
+deepseek_deepseek-v4-pro                         86.9%    51.3%   +35.5     80.6%    49.1%   +31.5    +4.0
+gemini-3-flash-preview                           92.3%    85.3%    +7.1     83.1%    78.8%    +4.4    +2.7
+gemini-3.1-flash-lite-preview                    86.7%    56.7%   +30.0     81.4%    48.5%   +32.9    -2.9
+gemini-3.1-pro-preview                           93.1%    90.5%    +2.7     92.2%    89.5%    +2.6    +0.1
+gpt-5                                            84.1%    78.2%    +5.9     81.8%    77.8%    +4.0    +1.9
+gpt-5-mini                                       82.9%    48.4%   +34.6     82.0%    49.2%   +32.7    +1.8
+gpt-5.5                                          89.0%    84.2%    +4.8     85.3%    78.9%    +6.4    -1.6
+openai_gpt-oss-120b                              43.1%    10.3%   +32.8     47.2%     9.1%   +38.2    -5.4
+openai_gpt-oss-20b                               25.9%     2.7%   +23.2     23.5%     2.2%   +21.3    +1.9
+qwen_qwen3.5-122b-a10b-reasoning-off             73.7%    42.2%   +31.5     71.2%    38.1%   +33.1    -1.6
+qwen_qwen3.5-27b-reasoning-off                   81.0%    50.5%   +30.5     79.6%    47.3%   +32.3    -1.8
+qwen_qwen3.5-35b-a3b-reasoning-off               67.1%    32.3%   +34.8     64.3%    30.0%   +34.3    +0.4
+qwen_qwen3.5-397b-a17b-reasoning-off             83.5%    50.2%   +33.3     79.2%    44.8%   +34.4    -1.1
+qwen_qwen3.5-9b-reasoning-on                     76.3%    44.4%   +31.9     68.8%    38.3%   +30.5    +1.4
+
+VG stats: Gemini mean +23.36 pp, Haiku mean +23.06 pp
+  Pearson r on VG:  0.978
+  Spearman ρ on VG: 0.849
+  VG > 0 under both judges: 18 / 18 models
