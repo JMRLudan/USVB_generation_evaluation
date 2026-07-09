@@ -79,6 +79,8 @@ VALID_PRESETS = (
     "canon_no_distractor_mit_systop", "canon_unified_mit_systop",
     # memory-conditioned eval presets (2026-07-08)
     "memcond_profile", "memcond_persn", "memcond_safety",
+    # naive RAG@5 eval preset (2026-07-09)
+    "rag5",
 )
 
 

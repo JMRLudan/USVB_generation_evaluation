@@ -97,5 +97,19 @@ echo "▶ prompts (memcond)"
 tar -I 'gzip -1' -cf "${PREFIX}-prompts-memcond.tar.gz" \
     generated/memcond_profile generated/memcond_persn generated/memcond_safety
 
+echo "▶ rag5 (runs + prompts + retrieval provenance)"
+STG="${PREFIX}-rag5-stg"; rm -rf "$STG"; mkdir -p "$STG/analysis_rag" "$STG/generated" "$STG/batch_manifests"
+for md in data/runs/rag5/*/; do
+    latest=$(ls -t "$md" | head -1)
+    [[ -f "${md}${latest}/results.tsv" ]] || continue
+    mkdir -p "${STG}/${md}${latest}"
+    cp "${md}${latest}/results.tsv" "${STG}/${md}${latest}/"
+done
+cp -r generated/rag5 "${STG}/generated/"
+cp analysis_rag/prompts_safe.jsonl analysis_rag/corpus.jsonl "${STG}/analysis_rag/" 2>/dev/null || true
+cp batch_manifests/rag5_*.json batch_manifests/judge__*__rag5.json "${STG}/batch_manifests/" 2>/dev/null || true
+tar -I 'gzip -1' -cf "${PREFIX}-rag5.tar.gz" -C "$STG" .
+rm -rf "$STG"
+
 ls -lh ${PREFIX}-*.tar.gz
 echo "✓ done — upload all parts to the GitHub release; each extracts in-place."
