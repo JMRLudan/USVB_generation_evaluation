@@ -272,6 +272,23 @@ def _list_models() -> list[dict[str, Any]]:
     return out
 
 
+_VALID_PRESETS = (
+    "canon_no_distractor", "canon_unified",
+    # naive-prompt mitigation arms (2026-07-08)
+    "canon_unified_mit_sysbottom", "canon_unified_mit_querytop",
+    "canon_no_distractor_mit_sysbottom", "canon_no_distractor_mit_querytop",
+    "canon_unified_mit_systop", "canon_no_distractor_mit_systop",
+    # memory-conditioned eval presets (2026-07-08)
+    "memcond_profile", "memcond_persn", "memcond_safety",
+)
+
+
+def _req_preset() -> str:
+    """Read + validate the `preset` query param (default canon_unified)."""
+    p = request.args.get("preset", CONDITION)
+    return p if p in _VALID_PRESETS else CONDITION
+
+
 def _resolve_run_id(model: str, run_id: str | None, preset: str = CONDITION) -> str | None:
     """If run_id is missing, pick the latest run for this (model, preset).
 
@@ -472,10 +489,11 @@ def api_results_reload():
 def api_results_summary():
     """Overall metrics for a (model, run) pair."""
     model = request.args.get("model", "")
-    run_id = _resolve_run_id(model, request.args.get("run_id"))
+    preset = _req_preset()
+    run_id = _resolve_run_id(model, request.args.get("run_id"), preset)
     if not (model and run_id):
         abort(400, description="missing model and/or run_id")
-    data = _load_run(model, run_id)
+    data = _load_run(model, run_id, preset)
     rows = [r for r in data["rows"] if not r["_is_error"]]
     if not rows:
         abort(404, description=f"no rows for {model}/{run_id}")
@@ -540,7 +558,8 @@ def api_results_depth_curve():
     valid variants).
     """
     model = request.args.get("model", "")
-    run_id = _resolve_run_id(model, request.args.get("run_id"))
+    preset = _req_preset()
+    run_id = _resolve_run_id(model, request.args.get("run_id"), preset)
     stat = request.args.get("stat", "SR").upper()
     variant = request.args.get("variant") or None
     try:
@@ -554,7 +573,7 @@ def api_results_depth_curve():
     if not (model and run_id):
         abort(400, description="missing model/run_id")
 
-    data = _load_run(model, run_id)
+    data = _load_run(model, run_id, preset)
     if not data["rows"]:
         abort(404, description=f"no rows for {model}/{run_id}")
 
@@ -600,7 +619,8 @@ def api_results_length_curve():
     y = STAT %.
     """
     model = request.args.get("model", "")
-    run_id = _resolve_run_id(model, request.args.get("run_id"))
+    preset = _req_preset()
+    run_id = _resolve_run_id(model, request.args.get("run_id"), preset)
     stat = request.args.get("stat", "SR").upper()
     variant = request.args.get("variant") or None
     try:
@@ -614,7 +634,7 @@ def api_results_length_curve():
     if not (model and run_id):
         abort(400, description="missing model/run_id")
 
-    data = _load_run(model, run_id)
+    data = _load_run(model, run_id, preset)
     if not data["rows"]:
         abort(404, description=f"no rows for {model}/{run_id}")
 
@@ -677,7 +697,8 @@ def api_results_variant_length_curves():
     so the lines are visually comparable.
     """
     model = request.args.get("model", "")
-    run_id = _resolve_run_id(model, request.args.get("run_id"))
+    preset = _req_preset()
+    run_id = _resolve_run_id(model, request.args.get("run_id"), preset)
     stat = request.args.get("stat", "SR").upper()
     try:
         n_bins = int(request.args.get("n_bins", "10"))
@@ -690,7 +711,7 @@ def api_results_variant_length_curves():
     if not (model and run_id):
         abort(400, description="missing model/run_id")
 
-    data = _load_run(model, run_id)
+    data = _load_run(model, run_id, preset)
     if not data["rows"]:
         abort(404, description=f"no rows for {model}/{run_id}")
 
@@ -767,7 +788,8 @@ def api_results_length_depth_surface():
     """Optional 2D surface — kept for parity with the figure-export
     pipeline. Same schema as before."""
     model = request.args.get("model", "")
-    run_id = _resolve_run_id(model, request.args.get("run_id"))
+    preset = _req_preset()
+    run_id = _resolve_run_id(model, request.args.get("run_id"), preset)
     stat = request.args.get("stat", request.args.get("metric", "SR")).upper()
     variant = request.args.get("variant") or None
     try:
@@ -783,7 +805,7 @@ def api_results_length_depth_surface():
     if not (model and run_id):
         abort(400, description="missing model/run_id")
 
-    data = _load_run(model, run_id)
+    data = _load_run(model, run_id, preset)
     rows = _filter_rows_for_stat(data["rows"], stat, variant=variant)
     rows = [r for r in rows
             if r.get("placement_frac") is not None and r.get("char_budget")]
@@ -844,9 +866,9 @@ _PROMPT_NAME_RE = re.compile(r"^(?P<sid>[A-Z]+-\d+)_(?P<ev>[^_]+)_(?P<perm>.+?)\
 
 @app.route("/api/prompts")
 def api_prompts():
-    """Browse canon_unified prompt files. Returns a paginated list with
-    minimal metadata for a left-rail picker."""
-    cond_dir = GENERATED_DIR / CONDITION
+    """Browse prompt files for a preset (default canon_unified). Returns
+    a paginated list with minimal metadata for a left-rail picker."""
+    cond_dir = GENERATED_DIR / _req_preset()
     if not cond_dir.exists():
         return jsonify({"prompts": [], "total": 0})
 
@@ -879,11 +901,11 @@ def api_prompts():
 
 @app.route("/api/prompt")
 def api_prompt():
-    """Single canon_unified prompt: system prompt, user message, full metadata."""
+    """Single prompt (preset-aware): system prompt, user message, full metadata."""
     name = request.args.get("name", "")
     if not name or "/" in name or ".." in name or not name.endswith(".json"):
         abort(400, description="invalid prompt name")
-    p = GENERATED_DIR / CONDITION / name
+    p = GENERATED_DIR / _req_preset() / name
     if not p.exists():
         abort(404, description=f"prompt {name} not found")
     with open(p) as f:
@@ -943,11 +965,19 @@ def api_prompt_generations():
     else:
         target_perm = f"{base_perm}-d{draw}"
 
+    preset = _req_preset()
     out: list[dict] = []
     for entry in _list_models():
         model = entry["model"]
-        run_id = entry["latest_run_id"]
-        loaded = _load_run(model, run_id, CONDITION)
+        # For non-headline presets, resolve that preset's latest run for
+        # this model; skip models that never ran the preset.
+        if preset == CONDITION:
+            run_id = entry["latest_run_id"]
+        else:
+            run_id = _resolve_run_id(model, None, preset)
+            if not run_id:
+                continue
+        loaded = _load_run(model, run_id, preset)
         for r in loaded.get("rows", []):
             if (r.get("scenario_id") == sid
                     and r.get("evidence_variant") == ev
@@ -1003,7 +1033,7 @@ def api_results_rows():
     Filterable by scenario_id, evidence_variant, parse_error, errored."""
     model = request.args.get("model", "")
     preset = request.args.get("preset", CONDITION)
-    if preset not in ("canon_no_distractor", "canon_unified"):
+    if preset not in _VALID_PRESETS:
         preset = CONDITION
     run_id = _resolve_run_id(model, request.args.get("run_id"), preset)
     if not (model and run_id):
@@ -1011,6 +1041,7 @@ def api_results_rows():
 
     sid = request.args.get("scenario_id", "") or ""
     ev = request.args.get("evidence_variant", "") or ""
+    rec = request.args.get("recommendation", "") or ""
     show_errors = request.args.get("show_errors", "1") == "1"
     show_parse_err = request.args.get("show_parse_err", "1") == "1"
     try:
@@ -1024,6 +1055,10 @@ def api_results_rows():
     rows = data["rows"]
     if sid: rows = [r for r in rows if r.get("scenario_id") == sid]
     if ev:  rows = [r for r in rows if r.get("evidence_variant") == ev]
+    if ev == "safe":  # convenience alias: A and B (no-constraint) rows
+        rows = [r for r in data["rows"] if r.get("evidence_variant") in ("A", "B")]
+        if sid: rows = [r for r in rows if r.get("scenario_id") == sid]
+    if rec: rows = [r for r in rows if (r.get("recommendation") or "") == rec]
     if not show_errors:    rows = [r for r in rows if not r["_is_error"]]
     if not show_parse_err: rows = [r for r in rows if r.get("parse_error") != "1"]
 
@@ -1051,7 +1086,7 @@ def api_results_rows():
             "placement_frac": r.get("placement_frac"),
         }
     return jsonify({
-        "model": model, "run_id": run_id,
+        "model": model, "run_id": run_id, "preset": preset,
         "total": total, "offset": offset, "limit": limit,
         "rows": [trim_row(r) for r in page],
     })
@@ -1104,7 +1139,7 @@ def api_results_row():
     """
     model = request.args.get("model", "")
     preset = request.args.get("preset", CONDITION)
-    if preset not in ("canon_no_distractor", "canon_unified"):
+    if preset not in _VALID_PRESETS:
         preset = CONDITION
     run_id = _resolve_run_id(model, request.args.get("run_id"), preset)
     sid = request.args.get("scenario_id", "")
@@ -1191,7 +1226,7 @@ def api_scenarios():
     """
     model = request.args.get("model", "")
     preset = request.args.get("preset", CONDITION)
-    if preset not in ("canon_no_distractor", "canon_unified"):
+    if preset not in _VALID_PRESETS:
         preset = CONDITION
     run_id = _resolve_run_id(model, request.args.get("run_id"), preset)
     sort = request.args.get("sort", "scenario_id")
@@ -1291,7 +1326,7 @@ def api_scenario():
     sid = request.args.get("id", "")
     model = request.args.get("model", "")
     preset = request.args.get("preset", CONDITION)
-    if preset not in ("canon_no_distractor", "canon_unified"):
+    if preset not in _VALID_PRESETS:
         preset = CONDITION
     run_id = _resolve_run_id(model, request.args.get("run_id"), preset)
     if not sid:

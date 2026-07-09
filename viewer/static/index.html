@@ -472,6 +472,21 @@
   <label for="model">Model</label>
   <select id="model"></select>
 
+  <label style="margin-left: 8px;" class="charts-only">Preset</label>
+  <select id="charts-preset" class="charts-only" style="font-size: 11px;">
+    <option value="canon_unified">canon_unified</option>
+    <option value="canon_no_distractor">canon_no_distractor</option>
+    <option value="canon_unified_mit_sysbottom">canon_unified_mit_sysbottom</option>
+    <option value="canon_unified_mit_querytop">canon_unified_mit_querytop</option>
+    <option value="canon_no_distractor_mit_sysbottom">canon_no_distractor_mit_sysbottom</option>
+    <option value="canon_no_distractor_mit_querytop">canon_no_distractor_mit_querytop</option>
+    <option value="canon_unified_mit_systop">canon_unified_mit_systop</option>
+    <option value="canon_no_distractor_mit_systop">canon_no_distractor_mit_systop</option>
+    <option value="memcond_profile">memcond_profile</option>
+    <option value="memcond_persn">memcond_persn</option>
+    <option value="memcond_safety">memcond_safety</option>
+  </select>
+
   <label style="margin-left: 8px;" class="charts-only">Metric</label>
   <div class="stat-buttons charts-only" id="stat-buttons"></div>
 
@@ -529,6 +544,15 @@
       <select id="scen-preset-sel" style="font-size: 11px;">
         <option value="canon_unified">canon_unified (vigilance test)</option>
         <option value="canon_no_distractor">canon_no_distractor (light test)</option>
+        <option value="canon_unified_mit_sysbottom">canon_unified_mit_sysbottom</option>
+        <option value="canon_unified_mit_querytop">canon_unified_mit_querytop</option>
+        <option value="canon_no_distractor_mit_sysbottom">canon_no_distractor_mit_sysbottom</option>
+        <option value="canon_no_distractor_mit_querytop">canon_no_distractor_mit_querytop</option>
+        <option value="canon_unified_mit_systop">canon_unified_mit_systop</option>
+        <option value="canon_no_distractor_mit_systop">canon_no_distractor_mit_systop</option>
+        <option value="memcond_profile">memcond_profile</option>
+        <option value="memcond_persn">memcond_persn</option>
+        <option value="memcond_safety">memcond_safety</option>
       </select>
       <button id="scen-random-btn" class="small-btn" title="Pick a random scenario">🎲 Random</button>
       <span id="scen-list-meta" style="color: var(--muted); margin-left: auto;"></span>
@@ -543,6 +567,20 @@
 <div class="res-grid results-only">
   <div class="res-rows-wrap">
     <div class="res-filters">
+      <label>Preset</label>
+      <select id="res-preset" style="font-size: 11px;">
+        <option value="canon_unified">canon_unified</option>
+        <option value="canon_no_distractor">canon_no_distractor</option>
+        <option value="canon_unified_mit_sysbottom">canon_unified_mit_sysbottom</option>
+        <option value="canon_unified_mit_querytop">canon_unified_mit_querytop</option>
+        <option value="canon_no_distractor_mit_sysbottom">canon_no_distractor_mit_sysbottom</option>
+        <option value="canon_no_distractor_mit_querytop">canon_no_distractor_mit_querytop</option>
+        <option value="canon_unified_mit_systop">canon_unified_mit_systop</option>
+        <option value="canon_no_distractor_mit_systop">canon_no_distractor_mit_systop</option>
+        <option value="memcond_profile">memcond_profile</option>
+        <option value="memcond_persn">memcond_persn</option>
+        <option value="memcond_safety">memcond_safety</option>
+      </select>
       <label>Scenario</label>
       <input id="res-sid" placeholder="any" size="6" />
       <label>Variant</label>
@@ -553,6 +591,15 @@
         <option value="B+C">B+C</option>
         <option value="A">A</option>
         <option value="B">B</option>
+        <option value="safe">safe (A|B)</option>
+      </select>
+      <label>Judge rec</label>
+      <select id="res-rec">
+        <option value="">any</option>
+        <option value="A">A</option>
+        <option value="B">B</option>
+        <option value="NEITHER_REFUSE">NEITHER_REFUSE</option>
+        <option value="NEITHER_HEDGE">NEITHER_HEDGE</option>
       </select>
       <label><input id="res-show-err" type="checkbox" checked /> errors</label>
       <label><input id="res-show-pe" type="checkbox" checked /> parse-err</label>
@@ -570,6 +617,20 @@
 <div class="pmt-grid prompts-only">
   <div class="pmt-list-wrap">
     <div class="pmt-controls">
+      <label>Preset</label>
+      <select id="pmt-preset" style="font-size: 11px;">
+        <option value="canon_unified">canon_unified</option>
+        <option value="canon_no_distractor">canon_no_distractor</option>
+        <option value="canon_unified_mit_sysbottom">canon_unified_mit_sysbottom</option>
+        <option value="canon_unified_mit_querytop">canon_unified_mit_querytop</option>
+        <option value="canon_no_distractor_mit_sysbottom">canon_no_distractor_mit_sysbottom</option>
+        <option value="canon_no_distractor_mit_querytop">canon_no_distractor_mit_querytop</option>
+        <option value="canon_unified_mit_systop">canon_unified_mit_systop</option>
+        <option value="canon_no_distractor_mit_systop">canon_no_distractor_mit_systop</option>
+        <option value="memcond_profile">memcond_profile</option>
+        <option value="memcond_persn">memcond_persn</option>
+        <option value="memcond_safety">memcond_safety</option>
+      </select>
       <label>Scenario</label>
       <input id="pmt-sid" placeholder="any" size="6" />
       <label>Variant</label>
@@ -719,12 +780,14 @@ let state = {
   scen_dir: 'asc',
   selected_sid: null,
   // Results tab
-  res_offset: 0, res_limit: 100,
-  res_sid: '', res_ev: '', res_show_err: true, res_show_pe: true,
+  res_offset: 0, res_limit: 100, res_preset: 'canon_unified',
+  res_sid: '', res_ev: '', res_rec: '', res_show_err: true, res_show_pe: true,
   res_selected: null,
+  // Charts tab
+  charts_preset: 'canon_unified',
   // Prompts tab
   pmt_offset: 0, pmt_limit: 200,
-  pmt_sid: '', pmt_ev: '',
+  pmt_sid: '', pmt_ev: '', pmt_preset: 'canon_unified',
   pmt_selected: null,
   // Scenario detail row browser
   scen_rows_offset: 0, scen_rows_limit: 50,
@@ -770,6 +833,12 @@ async function refreshAll() {
     refreshDepth(), refreshLength(), refreshVarLen(), refreshSummary(),
   ]);
 }
+
+const _chartsPresetSel = document.getElementById('charts-preset');
+if (_chartsPresetSel) _chartsPresetSel.addEventListener('change', e => {
+  state.charts_preset = e.target.value;
+  refreshAll();
+});
 
 function renderLineChart(svgEl, opts) {
   const W = opts.width || 600;
@@ -908,6 +977,7 @@ function renderLineChart(svgEl, opts) {
 
 async function refreshDepth() {
   const url = '/api/results/depth_curve?model=' + encodeURIComponent(state.model)
+    + '&preset=' + encodeURIComponent(state.charts_preset || 'canon_unified')
     + '&stat=' + state.stat + '&n_bins=10';
   const r = await fetch(url);
   const svg = document.getElementById('chart-depth');
@@ -941,6 +1011,7 @@ function baselineList(b, color, label) {
 
 async function refreshLength() {
   const url = '/api/results/length_curve?model=' + encodeURIComponent(state.model)
+    + '&preset=' + encodeURIComponent(state.charts_preset || 'canon_unified')
     + '&stat=' + state.stat + '&n_bins=10';
   const r = await fetch(url);
   const svg = document.getElementById('chart-length');
@@ -978,6 +1049,7 @@ async function refreshLength() {
 
 async function refreshVarLen() {
   const url = '/api/results/variant_length_curves?model=' + encodeURIComponent(state.model)
+    + '&preset=' + encodeURIComponent(state.charts_preset || 'canon_unified')
     + '&stat=' + state.stat + '&n_bins=10';
   const r = await fetch(url);
   const svg = document.getElementById('chart-varlen');
@@ -1043,7 +1115,8 @@ async function refreshVarLen() {
 }
 
 async function refreshSummary() {
-  const url = '/api/results/summary?model=' + encodeURIComponent(state.model);
+  const url = '/api/results/summary?model=' + encodeURIComponent(state.model)
+    + '&preset=' + encodeURIComponent(state.charts_preset || 'canon_unified');
   const r = await fetch(url);
   const tbl = document.getElementById('summary-table');
   const meta = document.getElementById('summary-meta');
@@ -1123,6 +1196,7 @@ function setTab(tab) {
   if (tab === 'surface')   refreshSurface();
   if (tab === 'frontier')  refreshFrontier();
 }
+
 document.querySelectorAll('.tab-btn').forEach(b => {
   b.addEventListener('click', () => setTab(b.dataset.tab));
 });
@@ -1612,6 +1686,7 @@ async function refreshResultsList() {
   if (!state.model) return;
   const params = new URLSearchParams({
     model: state.model,
+    preset: state.res_preset || 'canon_unified',
     offset: state.res_offset,
     limit: state.res_limit,
     show_errors: state.res_show_err ? '1' : '0',
@@ -1619,12 +1694,14 @@ async function refreshResultsList() {
   });
   if (state.res_sid) params.set('scenario_id', state.res_sid);
   if (state.res_ev)  params.set('evidence_variant', state.res_ev);
+  if (state.res_rec) params.set('recommendation', state.res_rec);
   const r = await fetch('/api/results/rows?' + params.toString());
   const list = document.getElementById('res-list');
   const meta = document.getElementById('res-meta');
   if (!r.ok) { list.innerHTML = ''; meta.textContent = 'Error ' + r.status; return; }
   const d = await r.json();
-  meta.textContent = 'showing ' + d.rows.length + ' of ' + d.total.toLocaleString();
+  meta.textContent = 'showing ' + d.rows.length + ' of ' + d.total.toLocaleString()
+    + '  ·  ' + (d.preset || 'canon_unified') + ' / run ' + (d.run_id || '?');
   list.innerHTML = '';
   // Some result TSVs (e.g. qwen3.5-9b canon_unified) have 3 rows per
   // (scenario_id, evidence_variant, permutation) tuple — different
@@ -1698,6 +1775,7 @@ async function refreshResultsDetail() {
   const sel = state.res_selected;
   const params = new URLSearchParams({
     model: state.model,
+    preset: state.res_preset || 'canon_unified',
     scenario_id: sel.scenario_id,
     evidence_variant: sel.evidence_variant,
     permutation: sel.permutation,
@@ -1852,12 +1930,21 @@ function wireRowDetailHandlers(d, prefix) {
   }
 }
 
+document.getElementById('res-preset').addEventListener('change', e => {
+  state.res_preset = e.target.value;
+  state.res_selected = null;
+  state.res_offset = 0; refreshResultsList(); refreshResultsDetail();
+});
 document.getElementById('res-sid').addEventListener('input', e => {
   state.res_sid = e.target.value.trim().toUpperCase();
   state.res_offset = 0; refreshResultsList();
 });
 document.getElementById('res-ev').addEventListener('change', e => {
   state.res_ev = e.target.value;
+  state.res_offset = 0; refreshResultsList();
+});
+document.getElementById('res-rec').addEventListener('change', e => {
+  state.res_rec = e.target.value;
   state.res_offset = 0; refreshResultsList();
 });
 document.getElementById('res-show-err').addEventListener('change', e => {
@@ -1879,12 +1966,14 @@ if (_resRandomBtn) _resRandomBtn.addEventListener('click', async () => {
   if (!state.model) return;
   const baseParams = new URLSearchParams({
     model: state.model,
+    preset: state.res_preset || 'canon_unified',
     offset: 0, limit: 1,
     show_errors: state.res_show_err ? '1' : '0',
     show_parse_err: state.res_show_pe ? '1' : '0',
   });
   if (state.res_sid) baseParams.set('scenario_id', state.res_sid);
   if (state.res_ev)  baseParams.set('evidence_variant', state.res_ev);
+  if (state.res_rec) baseParams.set('recommendation', state.res_rec);
   let total = 0;
   try {
     const r0 = await fetch('/api/results/rows?' + baseParams.toString());
@@ -1922,6 +2011,7 @@ if (_resRandomBtn) _resRandomBtn.addEventListener('click', async () => {
 // ─────────────────────────────────────────────────────────────
 async function refreshPromptsList() {
   const params = new URLSearchParams({
+    preset: state.pmt_preset || 'canon_unified',
     offset: state.pmt_offset,
     limit: state.pmt_limit,
   });
@@ -1981,7 +2071,8 @@ async function refreshPromptDetail() {
     detail.innerHTML = '<div class="scen-empty">Pick a prompt.</div>';
     return;
   }
-  const r = await fetch('/api/prompt?name=' + encodeURIComponent(state.pmt_selected));
+  const r = await fetch('/api/prompt?name=' + encodeURIComponent(state.pmt_selected)
+    + '&preset=' + encodeURIComponent(state.pmt_preset || 'canon_unified'));
   if (!r.ok) {
     detail.innerHTML = '<div class="scen-empty">Error ' + r.status + '</div>';
     return;
@@ -2072,7 +2163,8 @@ async function refreshPromptGenerations() {
   }
   metaEl.textContent = 'loading…';
   listEl.innerHTML = '';
-  const r = await fetch('/api/prompt/generations?name=' + encodeURIComponent(state.pmt_selected));
+  const r = await fetch('/api/prompt/generations?name=' + encodeURIComponent(state.pmt_selected)
+    + '&preset=' + encodeURIComponent(state.pmt_preset || 'canon_unified'));
   if (!r.ok) {
     metaEl.textContent = 'Error ' + r.status;
     return;
@@ -2132,6 +2224,12 @@ async function refreshPromptGenerations() {
   }
 }
 
+document.getElementById('pmt-preset').addEventListener('change', e => {
+  state.pmt_preset = e.target.value;
+  state.pmt_selected = null;
+  state.pmt_offset = 0;
+  refreshPromptsList(); refreshPromptDetail(); refreshPromptGenerations();
+});
 document.getElementById('pmt-sid').addEventListener('input', e => {
   state.pmt_sid = e.target.value.trim().toUpperCase();
   state.pmt_offset = 0; refreshPromptsList();
@@ -2146,7 +2244,8 @@ document.getElementById('pmt-ev').addEventListener('change', e => {
 // learn `total`, pick a uniform index, page-align, pre-select, refresh.
 const _pmtRandomBtn = document.getElementById('pmt-random-btn');
 if (_pmtRandomBtn) _pmtRandomBtn.addEventListener('click', async () => {
-  const baseParams = new URLSearchParams({ offset: 0, limit: 1 });
+  const baseParams = new URLSearchParams({ offset: 0, limit: 1,
+    preset: state.pmt_preset || 'canon_unified' });
   if (state.pmt_sid) baseParams.set('scenario_id', state.pmt_sid);
   if (state.pmt_ev)  baseParams.set('evidence_variant', state.pmt_ev);
   let total = 0;

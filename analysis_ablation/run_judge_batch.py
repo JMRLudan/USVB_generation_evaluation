@@ -71,7 +71,15 @@ PROMPTS_ROOT = REPO / "generated"
 RUNS_ROOT = REPO / "data" / "runs"
 MANIFESTS_DIR = REPO / "batch_manifests"
 
-VALID_PRESETS = ("canon_no_distractor", "canon_unified")
+VALID_PRESETS = (
+    "canon_no_distractor", "canon_unified",
+    # naive-prompt mitigation arms (2026-07-08)
+    "canon_no_distractor_mit_sysbottom", "canon_no_distractor_mit_querytop",
+    "canon_unified_mit_sysbottom", "canon_unified_mit_querytop",
+    "canon_no_distractor_mit_systop", "canon_unified_mit_systop",
+    # memory-conditioned eval presets (2026-07-08)
+    "memcond_profile", "memcond_persn", "memcond_safety",
+)
 
 
 # ──────────────────────────────────────────────────────────────────────
@@ -328,12 +336,27 @@ def cmd_fetch(model_dir: str, preset: str) -> int:
         return 1
     adapter = GeminiBatchAdapter()
     judge_results = []
+    # Per-chunk disk cache: slow downloads can exceed the sandbox's 45s
+    # per-call budget; caching makes repeated fetch calls resumable.
+    import pickle
+    cache_dir = MANIFESTS_DIR / f"judge__{model_dir}__{preset}.fetchcache"
+    cache_dir.mkdir(exist_ok=True)
     for i, bid in enumerate(m["batch_ids"]):
         if not bid:
             continue
-        print(f"[{preset}/{model_dir}] fetching chunk {i+1}/{len(m['batch_ids'])} ({bid})")
-        chunk = adapter.fetch_results(bid)
-        print(f"  fetched {len(chunk)} judge results")
+        cpath = cache_dir / f"{i:03d}.pkl"
+        if cpath.exists():
+            with open(cpath, "rb") as cf:
+                chunk = pickle.load(cf)
+            print(f"[{preset}/{model_dir}] chunk {i+1} from cache ({len(chunk)} results)")
+        else:
+            print(f"[{preset}/{model_dir}] fetching chunk {i+1}/{len(m['batch_ids'])} ({bid})")
+            chunk = adapter.fetch_results(bid)
+            tmp = cpath.with_suffix(".pkl.tmp")
+            with open(tmp, "wb") as cf:
+                pickle.dump(chunk, cf)
+            tmp.rename(cpath)
+            print(f"  fetched {len(chunk)} judge results")
         judge_results.extend(chunk)
 
     # Map (sid, variant, perm) → parsed judge fields
